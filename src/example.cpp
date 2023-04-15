@@ -217,3 +217,33 @@ void parse_GLL_sentence(string sentence, GLL_data *gll_data)
     gll_data->mode = fields[7][0];
 }
 
+
+
+void parse_ZDA_sentence(string sentence, ZDA_data *zda_data)
+{
+    // check if the sentence is a valid ZDA sentence
+    if (sentence.substr(0, 6) != "$GPZDA") {
+        return; // not a valid ZDA sentence, so return
+    }
+
+    // split the sentence into comma-separated fields
+    std::istringstream ss(sentence);
+    std::vector<std::string> fields;
+    std::string field;
+    while (std::getline(ss, field, ',')) {
+        fields.push_back(field);
+    }
+
+    // extract all the parameters from nmea packet and store them
+    // in their respective fields in zda_data structure
+    zda_data->hour = std::stoi(fields[1].substr(0, 2));
+    zda_data->minute = std::stoi(fields[1].substr(2, 2));
+    zda_data->second = std::stoi(fields[1].substr(4, 2));
+    zda_data->millisecond = std::stoi(fields[1].substr(7, 3));
+    zda_data->day = std::stoi(fields[2]);
+    zda_data->month = std::stoi(fields[3]);
+    zda_data->year = std::stoi(fields[4]);
+    zda_data->local_hour_offset = std::stoi(fields[5]);
+    zda_data->local_minute_offset = std::stoi(fields[6]);
+}
+

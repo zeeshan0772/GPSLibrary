@@ -180,3 +180,26 @@ TEST(ParseGLLSentenceTest, InvalidGLL) {
 }
 */
 
+
+
+
+
+TEST(ParseZDASentenceTest, ValidZDA) {
+  // Create a valid ZDA sentence
+  std::string sentence = "$GPZDA,024611.08,25,03,2002,00,00*6A ";
+
+  // Create a ZDA_data struct and call parse_ZDA_sentence
+  ZDA_data zda_data;
+  parse_ZDA_sentence(sentence, &zda_data);
+
+  // Check if the values in the struct match the expected values
+  ASSERT_EQ(2, zda_data.hour);
+  ASSERT_EQ(46, zda_data.minute);
+  ASSERT_EQ(11, zda_data.second);
+  ASSERT_EQ(8, zda_data.millisecond);
+  ASSERT_EQ(25, zda_data.day);
+  ASSERT_EQ(3, zda_data.month);
+  ASSERT_EQ(2002, zda_data.year);
+  ASSERT_EQ(0, zda_data.local_hour_offset);
+  ASSERT_EQ(0, zda_data.local_minute_offset);
+}

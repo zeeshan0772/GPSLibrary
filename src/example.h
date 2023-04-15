@@ -106,6 +106,26 @@ typedef struct {
 
 
 
+
+// structure for storing parameters contained in ZDA type packet
+typedef struct {
+    int day; // day of month (1-31)
+    int month; // month of year (1-12)
+    int year; // year (4 digits)
+    int hour; // hours (0-23)
+    int minute; // minutes (0-59)
+    int second; // seconds (0-59)
+    int millisecond; // milliseconds (0-999)
+    int local_hour_offset; // local hour offset from UTC (hours)
+    int local_minute_offset; // local minute offset from UTC (minutes)
+} ZDA_data;
+
+
+
+
+
+
+
 /*
 // structure for storing parameters contained in GSV type packet
 typedef struct {
@@ -114,7 +134,6 @@ typedef struct {
     // example: $GPVTG,054.7,T,034.4,M,005.5,N,010.2,K,A*25
 } RMC_data;
 */
-
 
 typedef struct {
     string sentence_code;
@@ -133,3 +152,4 @@ void parse_GSV_sentence(string sentence, GSV_data *gsv_data);
 void parse_RMC_sentence(string sentence, RMC_data *rmc_data);
 void parse_VTG_sentence(string sentence, VTG_data *vtg_data);
 void parse_GLL_sentence(string sentence, GLL_data *gll_data);
+void parse_ZDA_sentence(string sentence, ZDA_data *zda_data);
