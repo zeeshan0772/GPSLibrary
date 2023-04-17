@@ -121,6 +121,18 @@ typedef struct {
 } ZDA_data;
 
 
+// structure for storing parameters contained in GST type packet
+typedef struct {
+    std::string utc_time;    // UTC time in hhmmss format
+    double rms_deviation;     // root-mean-square deviation of range residuals (m)
+    double semi_major_err;    // semi-major axis error estimate (m)
+    double semi_minor_err;    // semi-minor axis error estimate (m)
+    double orientation_err;   // orientation of semi-major axis error estimate (deg)
+    double lat_err;           // latitude error estimate (m)
+    double lon_err;           // longitude error estimate (m)
+    double alt_err;           // altitude error estimate (m)
+} GST_data;
+
 
 
 
@@ -153,3 +165,4 @@ void parse_RMC_sentence(string sentence, RMC_data *rmc_data);
 void parse_VTG_sentence(string sentence, VTG_data *vtg_data);
 void parse_GLL_sentence(string sentence, GLL_data *gll_data);
 void parse_ZDA_sentence(string sentence, ZDA_data *zda_data);
+void parse_GST_sentence(string sentence, GST_data *gst_data);

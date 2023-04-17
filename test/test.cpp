@@ -203,3 +203,21 @@ TEST(ParseZDASentenceTest, ValidZDA) {
   ASSERT_EQ(0, zda_data.local_hour_offset);
   ASSERT_EQ(0, zda_data.local_minute_offset);
 }
+
+
+TEST(GSTParsingTest, ValidSentence) {
+  std::string sentence = "$GPGST,024603.00,3.2,6.6,4.7,47.3,5.8,5.6,22.0*58";
+
+  GST_data parsed_data;
+  parse_GST_sentence(sentence, &parsed_data);
+
+  ASSERT_EQ(parsed_data.utc_time, "024603.00");
+  ASSERT_DOUBLE_EQ(parsed_data.rms_deviation, 3.2);
+  ASSERT_DOUBLE_EQ(parsed_data.semi_major_err, 6.6);
+  ASSERT_DOUBLE_EQ(parsed_data.semi_minor_err, 4.7);
+  ASSERT_DOUBLE_EQ(parsed_data.orientation_err, 47.3);
+  ASSERT_DOUBLE_EQ(parsed_data.lat_err, 5.8);
+  ASSERT_DOUBLE_EQ(parsed_data.lon_err, 5.6);
+  ASSERT_DOUBLE_EQ(parsed_data.alt_err, 22.0);
+}
+

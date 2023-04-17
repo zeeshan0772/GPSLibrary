@@ -1,3 +1,6 @@
+// write code for handling missing fields
+// write code for handling incomplete packets
+
 #include "example.h"
 
 void parse_nmea_sentence(string sentence)
@@ -247,3 +250,47 @@ void parse_ZDA_sentence(string sentence, ZDA_data *zda_data)
     zda_data->local_minute_offset = std::stoi(fields[6]);
 }
 
+
+
+
+void parse_GST_sentence(string sentence, GST_data *gst_data)
+{
+    // check if the sentence is a valid GST sentence
+    if (sentence.substr(0, 6) != "$GPGST") {
+        return; // not a valid GST sentence, so return
+    }
+
+    // split the sentence into comma-separated fields
+    std::istringstream ss(sentence);
+    std::vector<std::string> fields;
+    std::string field;
+    while (std::getline(ss, field, ',')) {
+        fields.push_back(field);
+    }
+
+    // extract all the parameters from nmea sentence and store them
+    // in their respective fields in gst_data structure
+    gst_data->utc_time = fields[1];
+    gst_data->rms_deviation = std::stod(fields[2]);
+    gst_data->semi_major_err = std::stod(fields[3]);
+    gst_data->semi_minor_err = std::stod(fields[4]);
+    if (!fields[5].empty())
+        gst_data->orientation_err = std::stod(fields[5]);
+    else
+        gst_data->orientation_err = 0;
+
+    if (!fields[6].empty())
+        gst_data->lat_err = std::stod(fields[6]);
+    else
+        gst_data->lat_err = 0;
+    
+    if (!fields[7].empty())
+        gst_data->lon_err = std::stod(fields[7]);
+    else
+        gst_data->lon_err = 0;
+
+    if (!fields[8].empty())
+        gst_data->alt_err = std::stod(fields[8]);
+    else
+        gst_data->lon_err = 0;
+}
