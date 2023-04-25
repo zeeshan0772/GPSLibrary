@@ -141,7 +141,7 @@ int parse_GGA_sentence(std::string sentence, GGA_data *gga_data) {
     return 0;
 }
 
-void parse_GSA_sentence(string sentence, GSA_data *gsa_data) {
+int parse_GSA_sentence(string sentence, GSA_data *gsa_data) {
     // check if the sentence is a valid GSA sentence
     if (sentence.substr(0, 6) != "$GPGSA") {
         return WRONG_SENTENCE_ID_ERR; // not a valid GSA sentence, so return
@@ -155,18 +155,53 @@ void parse_GSA_sentence(string sentence, GSA_data *gsa_data) {
         fields.push_back(field);
     }
 
-    gsa_data->mode1 = fields[1][0];
-    gsa_data->mode2 = stoi(fields[2]);
-    for (int i = 0; i < 12; i++) {
-        if (fields[i+3].empty()) {
-            gsa_data->prn[i] = 0;
-        } else {
-            gsa_data->prn[i] = stoi(fields[i+3]);
+    if (fields.size() == 19)  // No field is missing
+    {
+        gsa_data->mode1 = fields[1][0];
+
+        if (!fields[2].empty() && is_numeric(fields[2])) {
+            gsa_data->mode2 = stoi(fields[2]);
         }
+        else {
+            gsa_data->mode2 = DEFAULT_VAL_NUM;
+        }
+
+        for (int i = 0; i < 12; i++) {
+            if (!fields[i+3].empty() && is_numeric(fields[i+3])) {
+                gsa_data->prn[i] = stoi(fields[i+3]);
+            } else {
+                gsa_data->prn[i] = DEFAULT_VAL_NUM;
+            }
+        }
+
+        if (!fields[15].empty() && is_numeric(fields[15]))
+            gsa_data->pdop = stod(fields[15]);
+        else
+            gsa_data->pdop = DEFAULT_VAL_NUM;
+
+        if (!fields[16].empty() && is_numeric(fields[16]))
+            gsa_data->hdop = stod(fields[16]);
+        else
+            gsa_data->hdop = DEFAULT_VAL_NUM;
+
+        if (!fields[17].empty() && is_numeric(fields[17]))
+            gsa_data->vdop = stod(fields[17]);
+        else
+            gsa_data->vdop = DEFAULT_VAL_NUM;
     }
-    gsa_data->pdop = stod(fields[15]);
-    gsa_data->hdop = stod(fields[16]);
-    gsa_data->vdop = stod(fields[17]);
+    else
+    {
+        gsa_data->mode1 = '\0';
+        gsa_data->mode2 = DEFAULT_VAL_NUM;
+        for (int i = 0; i < 12; i++) {
+            gsa_data->prn[i] = DEFAULT_VAL_NUM;
+        }
+        gsa_data->pdop = DEFAULT_VAL_NUM;
+        gsa_data->hdop = DEFAULT_VAL_NUM;
+        gsa_data->vdop = DEFAULT_VAL_NUM;  
+        return MISSING_PARAM_ERR;      
+    }
+    return 0;
 }
 
 void parse_GSV_sentence(string sentence, GSV_data *gsv_data) {
