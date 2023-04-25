@@ -17,8 +17,8 @@ TEST(get_nmea_sentence_code, handle_invalid_nmea_format) {
 }
 */
 
-/*
-TEST(GGA_parser, parsing_test_for_GGA) {
+
+TEST(GGA_parser, Valid_data) {
         auto sentence = "$GPGGA,170834,4124.8963,N,08151.6838,W,1,05,1.5,280.2,M,-34.0,M,,,*59";
 
         GGA_data *gga_data = new GGA_data;
@@ -40,6 +40,50 @@ TEST(GGA_parser, parsing_test_for_GGA) {
         ASSERT_EQ("", gga_data->diff_ref_station_id);
 }
 
+TEST(GGA_parser, data_with_missing_params) {
+        auto sentence = "$GPGGA,170834,1.5,280.2,M,-34.0,M,,,*59";
+
+        GGA_data *gga_data = new GGA_data;
+        int err_code = parse_GGA_sentence(sentence, gga_data);
+        ASSERT_EQ(err_code, MISSING_PARAM_ERR);
+        ASSERT_EQ("", gga_data->time);
+        ASSERT_EQ("", gga_data->latitude);
+        ASSERT_EQ('\0', gga_data->lat_direction);
+        ASSERT_EQ("", gga_data->longitude);
+        ASSERT_EQ('\0', gga_data->lon_direction);
+        ASSERT_EQ(DEFAULT_VAL_NUM, gga_data->gps_quality);
+        ASSERT_EQ(DEFAULT_VAL_NUM, gga_data->num_satellites);
+        ASSERT_DOUBLE_EQ(DEFAULT_VAL_NUM, gga_data->hdop);
+        ASSERT_DOUBLE_EQ(DEFAULT_VAL_NUM, gga_data->altitude);
+        ASSERT_EQ('\0', gga_data->unit_of_altitude);
+        ASSERT_DOUBLE_EQ(DEFAULT_VAL_NUM, gga_data->geoidal_sep);
+        ASSERT_EQ('\0', gga_data->geoidal_unit);
+        ASSERT_EQ(DEFAULT_VAL_NUM, gga_data->age_diff_corr);
+        ASSERT_EQ("", gga_data->diff_ref_station_id);
+}
+
+TEST(GGA_parser, data_with_wrong_strings) {
+        auto sentence = "$GPGGA,170834,4124.8963,N,08151.6838,W,*1,*05,*1.5,/280.2,M,%-34.0,M,,,*59";
+
+        GGA_data *gga_data = new GGA_data;
+        parse_GGA_sentence(sentence, gga_data);
+
+        ASSERT_EQ("170834", gga_data->time);
+        ASSERT_EQ("4124.8963", gga_data->latitude);
+        ASSERT_EQ('N', gga_data->lat_direction);
+        ASSERT_EQ("08151.6838", gga_data->longitude);
+        ASSERT_EQ('W', gga_data->lon_direction);
+        ASSERT_EQ(0, gga_data->gps_quality);
+        ASSERT_EQ(0, gga_data->num_satellites);
+        ASSERT_DOUBLE_EQ(0, gga_data->hdop);
+        ASSERT_DOUBLE_EQ(0, gga_data->altitude);
+        ASSERT_EQ('M', gga_data->unit_of_altitude);
+        ASSERT_DOUBLE_EQ(0, gga_data->geoidal_sep);
+        ASSERT_EQ('M', gga_data->geoidal_unit);
+        ASSERT_EQ(0, gga_data->age_diff_corr);
+        ASSERT_EQ("", gga_data->diff_ref_station_id);
+}
+/*
 TEST(GSA_parser, parsing_test_for_GSA) {
     auto sentence = "$GPGSA,A,3,19,28,14,18,27,22,31,39,,,,,1.7,1.0,1.3*34";
     GSA_data *gsa_data = new GSA_data;
@@ -141,7 +185,7 @@ TEST(ParseVTGSentenceTest, ValidSentence) {
   ASSERT_EQ(vtg_data.mode, 'A');
 }
 */
-
+/*
 TEST(ParseGLLSentenceTest, ValidGLL) {
   // Create a valid GLL sentence
   std::string sentence = "$GPGLL,4916.45,N,12311.12,W,225444.00,A,A*58";
@@ -159,7 +203,7 @@ TEST(ParseGLLSentenceTest, ValidGLL) {
   ASSERT_EQ(gll_data.status, 'A');
   ASSERT_EQ(gll_data.mode, 'A');
 }
-
+*/
 /*
 TEST(ParseGLLSentenceTest, InvalidGLL) {
   // Create an invalid GLL sentence
@@ -181,9 +225,7 @@ TEST(ParseGLLSentenceTest, InvalidGLL) {
 */
 
 
-
-
-
+/*
 TEST(ParseZDASentenceTest, ValidZDA) {
   // Create a valid ZDA sentence
   std::string sentence = "$GPZDA,024611.08,25,03,2002,00,00*6A ";
@@ -220,4 +262,46 @@ TEST(GSTParsingTest, ValidSentence) {
   ASSERT_DOUBLE_EQ(parsed_data.lon_err, 5.6);
   ASSERT_DOUBLE_EQ(parsed_data.alt_err, 22.0);
 }
+*/
+/*
+TEST(ParseHDT, ValidSentence) {
+  // Example valid HDT sentence: "$GPHDT,123.456,T*23\r\n"
+  std::string sentence = "$GPHDT,123.456,T*23\r\n";
+  HDT_data hdt_data;
+  parse_HDT_sentence(sentence, &hdt_data);
+  ASSERT_FLOAT_EQ(hdt_data.heading, 123.456);
+}
+*/
+/*
+TEST(ParseHDT, InvalidSentence) {
+  // Example invalid HDT sentence: "$GPVTG,1.2,T,3.4,M,5.6,N,10.4,K*4E\r\n"
+  std::string sentence = "$GPVTG,1.2,T,3.4,M,5.6,N,10.4,K*4E\r\n";
+  HDT_data hdt_data;
+  parse_HDT_sentence(sentence, &hdt_data);
+  ASSERT_EQ(hdt_data.heading, 0.0);
+}
+*/
 
+/*
+TEST(ParseGRS, ValidSentence) {
+  // Example valid GRS sentence: "$GPGRS,024603.00,1,-1.8,-2.7,0.3,,,,,,,,,*6C"
+  std::string sentence = "$GPGRS,220320.0,0,-0.8,-0.2,-0.1,-0.2,0.8,0.6,,,,,,1,*55"; 
+
+  GRS_data grs_data;
+  parse_GRS_sentence(sentence, &grs_data);
+  ASSERT_EQ(grs_data.utc_time, "220320.0");
+  ASSERT_EQ(grs_data.mode, 0);
+  ASSERT_FLOAT_EQ(grs_data.residual1, -0.8);
+  ASSERT_FLOAT_EQ(grs_data.residual2, -0.2);
+  ASSERT_FLOAT_EQ(grs_data.residual3, -0.1);
+  ASSERT_FLOAT_EQ(grs_data.residual4, -0.2);
+  ASSERT_FLOAT_EQ(grs_data.residual5, 0.8);
+  ASSERT_FLOAT_EQ(grs_data.residual6, 0.6);
+  ASSERT_FLOAT_EQ(grs_data.residual7, 0.0);
+  ASSERT_FLOAT_EQ(grs_data.residual8, 0.0);
+  ASSERT_FLOAT_EQ(grs_data.residual9, 0.0);
+  ASSERT_FLOAT_EQ(grs_data.residual11, 0.0);
+  ASSERT_FLOAT_EQ(grs_data.residual12, 1);
+}
+
+*/

@@ -9,8 +9,9 @@ source file to be included only once in a single compilation.
 #include <vector>
 using namespace std;
 
-
-
+#define MISSING_PARAM_ERR -1
+#define WRONG_SENTENCE_ID_ERR -2
+#define DEFAULT_VAL_NUM 0   // if numeric field is missing store this value in the struct field
 /*
     GGA - Global Positioning System Fix Data
     GSA - GPS DOP and Active Satellites
@@ -134,15 +135,34 @@ typedef struct {
 } GST_data;
 
 
+// structure for storing parameters contained in HDT type sentence
+typedef struct {
+    float heading; // heading in degrees (true)
+} HDT_data;
 
-
+typedef struct {
+    std::string utc_time; // UTC time in hhmmss format
+    int mode; // receiver mode (0=no mode value yet, 1=autonomous, 2=DGPS, 3=estimated, 4=manual, 5=simulation)
+    float residual1; // range residual 1 
+    float residual2; // range residual 2 
+    float residual3; // range residual 3 
+    float residual4; // range residual 4 
+    float residual5; // range residual 5 
+    float residual6; // range residual 6 
+    float residual7; // range residual 7 
+    float residual8; // range residual 8 
+    float residual9; // range residual 9 
+    float residual10; // range residual 10
+    float residual11; // range residual 11
+    float residual12; // range residual 12
+} GRS_data;
 
 
 /*
-// structure for storing parameters contained in GSV type packet
+// structure for storing parameters contained in GSV type sentence
 typedef struct {
     // complete this code
-    // declare the elements of this struct to store NMEA RMC packet fields
+    // declare the elements of this struct to store NMEA RMC sentence fields
     // example: $GPVTG,054.7,T,034.4,M,005.5,N,010.2,K,A*25
 } RMC_data;
 */
@@ -158,11 +178,14 @@ typedef struct {
 
 void parse_nmea_sentence(string sentence);
 string get_nmea_sentence_code(string sentence);
-void parse_GGA_sentence(string sentence, GGA_data *gga_data);
-void parse_GSA_sentence(string sentence, GSA_data *gsa_data);
+
+int parse_GGA_sentence(string sentence, GGA_data *gga_data);
+int parse_GSA_sentence(string sentence, GSA_data *gsa_data);
 void parse_GSV_sentence(string sentence, GSV_data *gsv_data);
 void parse_RMC_sentence(string sentence, RMC_data *rmc_data);
 void parse_VTG_sentence(string sentence, VTG_data *vtg_data);
 void parse_GLL_sentence(string sentence, GLL_data *gll_data);
 void parse_ZDA_sentence(string sentence, ZDA_data *zda_data);
 void parse_GST_sentence(string sentence, GST_data *gst_data);
+void parse_HDT_sentence(string sentence, HDT_data *hdt_data);
+void parse_GRS_sentence(string sentence, GRS_data *grs_data);

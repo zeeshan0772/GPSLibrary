@@ -38,12 +38,31 @@ void parse_GGA_sentence(string sentence, GGA_data *gga_data)
 }
 */
 
+// Returns true if the input string contains numeric data, false otherwise
+bool is_numeric(const std::string& input) {
+    if (input.empty()) {
+        // Empty strings are not considered numeric
+        return false;
+    }
 
-void parse_GGA_sentence(std::string sentence, GGA_data *gga_data) {
+    // Loop through each character in the string
+    for (char c : input) {
+        if (!isdigit(c) && c != '.' && c != '-') {
+            // If a non-numeric character is found, return false
+            return false;
+        }
+    }
+
+    // All characters are numeric, return true
+    return true;
+}
+
+int parse_GGA_sentence(std::string sentence, GGA_data *gga_data) {
     // check if the sentence is a valid GGA sentence
     if (sentence.substr(0, 6) != "$GPGGA") {
-        return; // not a valid GGA sentence, so return
+        return WRONG_SENTENCE_ID_ERR; // not a valid GGA sentence, so return
     }
+
 
     // split the sentence into comma-separated fields
     std::istringstream ss(sentence);
@@ -53,29 +72,79 @@ void parse_GGA_sentence(std::string sentence, GGA_data *gga_data) {
         fields.push_back(field);
     }
 
-    // extract the fields and store them in the gga_data structure
-    gga_data->time = fields[1];
-    gga_data->latitude = fields[2];
-    gga_data->lat_direction = fields[3][0];
-    gga_data->longitude = fields[4];
-    gga_data->lon_direction = fields[5][0];
-    gga_data->gps_quality = std::stoi(fields[6]);
-    gga_data->num_satellites = std::stoi(fields[7]);
-    gga_data->hdop = std::stod(fields[8]);
-    gga_data->altitude = std::stod(fields[9]);
-    gga_data->unit_of_altitude = fields[10][0];
-    gga_data->geoidal_sep = std::stod(fields[11]);
-    gga_data->geoidal_unit = fields[12][0];
-    if (!fields[13].empty()) {
-        gga_data->age_diff_corr = std::stod(fields[13]);
+    if (fields.size() == 16)  // No field is missing
+    {
+        // extract the fields and store them in the gga_data structure
+        gga_data->time = fields[1];
+        gga_data->latitude = fields[2];
+        gga_data->lat_direction = fields[3][0];
+        gga_data->longitude = fields[4];
+        gga_data->lon_direction = fields[5][0];
+
+        // handle exception
+        if (!fields[6].empty() && is_numeric(fields[6]))
+            gga_data->gps_quality = std::stoi(fields[6]);
+        else
+            gga_data->gps_quality = DEFAULT_VAL_NUM;
+
+        if (!fields[7].empty() && is_numeric(fields[7]))
+            gga_data->num_satellites = std::stoi(fields[7]);
+        else
+            gga_data->num_satellites = DEFAULT_VAL_NUM;
+
+        if (!fields[8].empty() && is_numeric(fields[8]))
+            gga_data->hdop = std::stod(fields[8]);
+        else
+            gga_data->hdop = DEFAULT_VAL_NUM;
+
+        if (!fields[9].empty() && is_numeric(fields[9]))
+            gga_data->altitude = std::stod(fields[9]);
+        else
+            gga_data->altitude = DEFAULT_VAL_NUM;
+
+        gga_data->unit_of_altitude = fields[10][0];
+        
+        if (!fields[11].empty() && is_numeric(fields[11]))
+            gga_data->geoidal_sep = std::stod(fields[11]);
+        else
+            gga_data->geoidal_sep = DEFAULT_VAL_NUM;
+
+        gga_data->geoidal_unit = fields[12][0];
+        
+        if (!fields[13].empty() && is_numeric(fields[13])) {
+            gga_data->age_diff_corr = std::stod(fields[13]);
+        }
+        else
+            gga_data->age_diff_corr = DEFAULT_VAL_NUM;
+
+        gga_data->diff_ref_station_id = fields[14];
     }
-    gga_data->diff_ref_station_id = fields[14];
+    else    // if some field(s) are missing
+    {
+        gga_data->time = "";
+        gga_data->latitude = "";
+        gga_data->lat_direction = '\0'; // store null terminator indicating this field is empty
+        gga_data->longitude = "";
+        gga_data->lon_direction = '\0';
+        gga_data->gps_quality = DEFAULT_VAL_NUM;
+        gga_data->num_satellites = DEFAULT_VAL_NUM;
+        gga_data->hdop = DEFAULT_VAL_NUM;
+        gga_data->altitude = DEFAULT_VAL_NUM;
+        gga_data->unit_of_altitude = '\0';
+        gga_data->geoidal_sep = DEFAULT_VAL_NUM;
+        gga_data->geoidal_unit = '\0';
+        gga_data->age_diff_corr = DEFAULT_VAL_NUM;
+        gga_data->diff_ref_station_id = fields[14];
+        return MISSING_PARAM_ERR;
+    }
+
+    return 0;
 }
 
 void parse_GSA_sentence(string sentence, GSA_data *gsa_data) {
     // check if the sentence is a valid GSA sentence
     if (sentence.substr(0, 6) != "$GPGSA") {
-        return; // not a valid GSA sentence, so return
+        return WRONG_SENTENCE_ID_ERR; // not a valid GSA sentence, so return
     }
 
     // split the sentence into comma-separated fields
@@ -293,4 +362,116 @@ void parse_GST_sentence(string sentence, GST_data *gst_data)
         gst_data->alt_err = std::stod(fields[8]);
     else
         gst_data->lon_err = 0;
+}
+
+void parse_HDT_sentence(string sentence, HDT_data *hdt_data)
+{
+    // check if the sentence is a valid HDT sentence
+    if (sentence.substr(0, 6) != "$GPHDT") {
+        return; // not a valid HDT sentence, so return
+    }
+
+    // split the sentence into comma-separated fields
+    std::istringstream ss(sentence);
+    std::vector<std::string> fields;
+    std::string field;
+    while (std::getline(ss, field, ',')) {
+        fields.push_back(field);
+    }
+
+    // extract all the parameters from nmea sentence and store them
+    // in their respective fields in gst_data structure
+    if (!fields[1].empty())
+        hdt_data->heading = std::stof(fields[1]);
+    else
+        hdt_data->heading = 0.0;
+}
+
+void parse_GRS_sentence(string sentence, GRS_data *grs_data)
+{
+    // check if the sentence is a valid GRS sentence
+    if (sentence.substr(0, 6) != "$GPGRS") {
+        return; // not a valid GRS sentence, so return
+    }
+
+    // split the sentence into comma-separated fields
+    std::istringstream ss(sentence);
+    std::vector<std::string> fields;
+    std::string field;
+    while (std::getline(ss, field, ',')) {
+        fields.push_back(field);
+    }
+
+    // extract all the parameters from nmea sentence and store them
+    // in their respective fields in gst_data structure
+    if (!fields[1].empty())
+        grs_data->utc_time = fields[1];
+    else
+        grs_data->utc_time = "";
+
+    if (!fields[2].empty())
+        grs_data->mode = std::stoi(fields[2]);
+    else
+        grs_data->mode = 0;
+
+    if (!fields[3].empty())
+        grs_data->residual1 = std::stof(fields[3]);
+    else
+        grs_data->residual1 = 0;
+    
+    if (!fields[4].empty())
+        grs_data->residual2 = std::stof(fields[4]);
+    else
+        grs_data->residual2 = 0;
+
+    if (!fields[5].empty())
+        grs_data->residual3 = std::stof(fields[5]);
+    else
+        grs_data->residual3 = 0;
+
+    if (!fields[6].empty())
+        grs_data->residual4 = std::stof(fields[6]);
+    else
+        grs_data->residual4 = 0;
+
+    if (!fields[7].empty())
+        grs_data->residual5 = std::stof(fields[7]);
+    else
+        grs_data->residual5 = 0;
+
+    if (!fields[8].empty())
+        grs_data->residual6 = std::stof(fields[8]);
+    else
+        grs_data->residual6 = 0;
+
+    if (!fields[9].empty())
+        grs_data->residual7 = std::stof(fields[9]);
+    else
+        grs_data->residual7 = 0;
+
+    if (!fields[10].empty())
+        grs_data->residual8 = std::stof(fields[10]);
+    else
+        grs_data->residual8 = 0;
+
+    if (!fields[11].empty())
+        grs_data->residual9 = std::stof(fields[11]);
+    else
+        grs_data->residual9 = 0;
+
+    if (!fields[12].empty())
+        grs_data->residual10 = std::stof(fields[12]);
+    else
+        grs_data->residual10 = 0;
+
+    if (!fields[13].empty())
+        grs_data->residual11 = std::stof(fields[13]);
+    else
+        grs_data->residual11 = 0;
+
+    if (!fields[14].empty())
+        grs_data->residual12 = std::stof(fields[14]);
+    else
+        grs_data->residual12 = 0;
+
 }
