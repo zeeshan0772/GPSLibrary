@@ -181,8 +181,8 @@ string get_nmea_sentence_code(string sentence);
 
 int parse_GGA_sentence(string sentence, GGA_data *gga_data);
 int parse_GSA_sentence(string sentence, GSA_data *gsa_data);
-void parse_GSV_sentence(string sentence, GSV_data *gsv_data);
-void parse_RMC_sentence(string sentence, RMC_data *rmc_data);
+int parse_GSV_sentence(string sentence, GSV_data *gsv_data);
+int parse_RMC_sentence(string sentence, RMC_data *rmc_data);
 void parse_VTG_sentence(string sentence, VTG_data *vtg_data);
 void parse_GLL_sentence(string sentence, GLL_data *gll_data);
 void parse_ZDA_sentence(string sentence, ZDA_data *zda_data);

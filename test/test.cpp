@@ -197,6 +197,85 @@ TEST(parse_GSV_sentence_test, valid_sentence) {
   ASSERT_EQ(gsv_data->snr[3], 0);
 }
 
+
+TEST(parse_GSV_sentence_test, missing_params) {
+  // create a sample GSV sentence
+  std::string sentence = "$GPGSV,3,1,11,03,03,111,00,04,15,01,010,00,13,06,292,00*74";
+
+  // create a GSV_data object to store the parsed fields
+  GSV_data *gsv_data = new GSV_data;
+
+  // call the function to parse the sentence
+  int err_code = parse_GSV_sentence(sentence, gsv_data);
+
+  ASSERT_EQ(err_code, MISSING_PARAM_ERR);
+  // check if the parsed fields match the expected values
+  ASSERT_EQ(gsv_data->num_msgs, DEFAULT_VAL_NUM);
+  ASSERT_EQ(gsv_data->msg_num, DEFAULT_VAL_NUM);
+  ASSERT_EQ(gsv_data->num_sats, DEFAULT_VAL_NUM);
+
+  ASSERT_EQ(gsv_data->prn[0], DEFAULT_VAL_NUM);
+  ASSERT_EQ(gsv_data->elev[0], DEFAULT_VAL_NUM);
+  ASSERT_EQ(gsv_data->azim[0], DEFAULT_VAL_NUM);
+  ASSERT_EQ(gsv_data->snr[0], DEFAULT_VAL_NUM);
+
+  ASSERT_EQ(gsv_data->prn[1], DEFAULT_VAL_NUM);
+  ASSERT_EQ(gsv_data->elev[1], DEFAULT_VAL_NUM);
+  ASSERT_EQ(gsv_data->azim[1], DEFAULT_VAL_NUM);
+  ASSERT_EQ(gsv_data->snr[1], DEFAULT_VAL_NUM);
+
+  ASSERT_EQ(gsv_data->prn[2], DEFAULT_VAL_NUM);
+  ASSERT_EQ(gsv_data->elev[2], DEFAULT_VAL_NUM);
+  ASSERT_EQ(gsv_data->azim[2], DEFAULT_VAL_NUM);
+  ASSERT_EQ(gsv_data->snr[2], DEFAULT_VAL_NUM);
+
+  ASSERT_EQ(gsv_data->prn[3], DEFAULT_VAL_NUM);
+  ASSERT_EQ(gsv_data->elev[3], DEFAULT_VAL_NUM);
+  ASSERT_EQ(gsv_data->azim[3], DEFAULT_VAL_NUM);
+  ASSERT_EQ(gsv_data->snr[3], DEFAULT_VAL_NUM);
+}
+
+
+TEST(parse_GSV_sentence_test, Invalid_sentence) {
+  // create a sample GSV sentence
+  std::string sentence = "$GPGSV,*3,&1,11,03,03,111,00,04,15,270,00,06,01,010,00,13,06,292,00*74";
+
+  // create a GSV_data object to store the parsed fields
+  GSV_data *gsv_data = new GSV_data;
+
+  // call the function to parse the sentence
+  parse_GSV_sentence(sentence, gsv_data);
+
+  // check if the parsed fields match the expected values
+  ASSERT_EQ(gsv_data->num_msgs, DEFAULT_VAL_NUM);
+  ASSERT_EQ(gsv_data->msg_num, DEFAULT_VAL_NUM);
+  ASSERT_EQ(gsv_data->num_sats, 11);
+
+  ASSERT_EQ(gsv_data->prn[0], 3);
+  ASSERT_EQ(gsv_data->elev[0], 3);
+  ASSERT_EQ(gsv_data->azim[0], 111);
+  ASSERT_EQ(gsv_data->snr[0], 0);
+
+  ASSERT_EQ(gsv_data->prn[1], 4);
+  ASSERT_EQ(gsv_data->elev[1], 15);
+  ASSERT_EQ(gsv_data->azim[1], 270);
+  ASSERT_EQ(gsv_data->snr[1], 0);
+
+  ASSERT_EQ(gsv_data->prn[2], 6);
+  ASSERT_EQ(gsv_data->elev[2], 1);
+  ASSERT_EQ(gsv_data->azim[2], 10);
+  ASSERT_EQ(gsv_data->snr[2], 0);
+
+  ASSERT_EQ(gsv_data->prn[3], 13);
+  ASSERT_EQ(gsv_data->elev[3], 6);
+  ASSERT_EQ(gsv_data->azim[3], 292);
+  ASSERT_EQ(gsv_data->snr[3], 0);
+}
+*/
+
+
+
+
 TEST(parse_RMC_sentence, valid_sentence) {
     // Construct a valid RMC sentence
     std::string sentence = "$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70";
@@ -219,7 +298,30 @@ TEST(parse_RMC_sentence, valid_sentence) {
     ASSERT_EQ(rmc_data->variation_dir, 'W');
 }
 
+TEST(parse_RMC_sentence, missing_param) {
+    // Construct a valid RMC sentence
+    std::string sentence = "$GPRMC,220516,A,,231.8,130694,004.2,W*70";
 
+    // Call parse_RMC_sentence to parse the sentence
+    RMC_data *rmc_data = new RMC_data;
+    int err_code = parse_RMC_sentence(sentence, rmc_data);
+
+    ASSERT_EQ(err_code, MISSING_PARAM_ERR);
+    // Check that the parsed values match the expected values
+    ASSERT_EQ(rmc_data->utc_time, "");
+    ASSERT_EQ(rmc_data->status, '\0');
+    ASSERT_EQ(rmc_data->latitude, "");
+    ASSERT_EQ(rmc_data->latitude_dir, '\0');
+    ASSERT_EQ(rmc_data->longitude, "");
+    ASSERT_EQ(rmc_data->longitude_dir, '\0');
+    ASSERT_DOUBLE_EQ(rmc_data->speed_knots, DEFAULT_VAL_NUM);
+    ASSERT_DOUBLE_EQ(rmc_data->true_course, DEFAULT_VAL_NUM);
+    ASSERT_EQ(rmc_data->date, "");
+    ASSERT_DOUBLE_EQ(rmc_data->variation, DEFAULT_VAL_NUM);
+    ASSERT_EQ(rmc_data->variation_dir, '\0');
+}
+
+/*
 TEST(ParseVTGSentenceTest, ValidSentence) {
   // Arrange
   std::string sentence = "$GPVTG,054.7,T,034.4,M,005.5,N,010.2,K,A*25";

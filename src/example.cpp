@@ -204,10 +204,10 @@ int parse_GSA_sentence(string sentence, GSA_data *gsa_data) {
     return 0;
 }
 
-void parse_GSV_sentence(string sentence, GSV_data *gsv_data) {
+int parse_GSV_sentence(string sentence, GSV_data *gsv_data) {
     // check if the sentence is a valid GSV sentence
     if (sentence.substr(0, 6) != "$GPGSV") {
-        return; // not a valid GSV sentence, so return
+        return WRONG_SENTENCE_ID_ERR; // not a valid GSV sentence, so return
     }
 
     // split the sentence into comma-separated fields
@@ -218,32 +218,86 @@ void parse_GSV_sentence(string sentence, GSV_data *gsv_data) {
         fields.push_back(field);
     }
 
-    // extract the fields from the sentence
-    gsv_data->num_msgs = std::stoi(fields[1]);
-    gsv_data->msg_num = std::stoi(fields[2]);
-    gsv_data->num_sats = std::stoi(fields[3]);
+    if (fields.size() == 20)  // No field is missing
+    {
+        // extract the fields from the sentence
+        if (!fields[1].empty() && is_numeric(fields[1]))
+            gsv_data->num_msgs = std::stoi(fields[1]);
+        else
+            gsv_data->num_msgs = DEFAULT_VAL_NUM;
 
-    // extract the satellite data from the sentence
-    int num_sats = (fields.size() - 4) / 4;
-    gsv_data->prn.resize(num_sats);
-    gsv_data->elev.resize(num_sats);
-    gsv_data->azim.resize(num_sats);
-    gsv_data->snr.resize(num_sats);
+        if (!fields[2].empty() && is_numeric(fields[2]))
+            gsv_data->msg_num = std::stoi(fields[2]);
+        else
+            gsv_data->msg_num = DEFAULT_VAL_NUM;
 
-    for (int i = 0; i < num_sats; i++) {
-        int field_index = i * 4 + 4;
-        gsv_data->prn[i] = std::stoi(fields[field_index]);
-        gsv_data->elev[i] = std::stoi(fields[field_index + 1]);
-        gsv_data->azim[i] = std::stoi(fields[field_index + 2]);
-        gsv_data->snr[i] = std::stoi(fields[field_index + 3]);
+        if (!fields[3].empty() && is_numeric(fields[3]))
+            gsv_data->num_sats = std::stoi(fields[3]);
+        else
+            gsv_data->num_sats = DEFAULT_VAL_NUM;
+
+        // extract the satellite data from the sentence
+        int num_sats = (fields.size() - 4) / 4;
+        gsv_data->prn.resize(num_sats);
+        gsv_data->elev.resize(num_sats);
+        gsv_data->azim.resize(num_sats);
+        gsv_data->snr.resize(num_sats);
+
+        for (int i = 0; i < num_sats; i++) {
+            int field_index = i * 4 + 4;
+            if (!fields[field_index].empty() && is_numeric(fields[field_index]))
+                gsv_data->prn[i] = std::stoi(fields[field_index]);
+            else
+                gsv_data->prn[i] = DEFAULT_VAL_NUM;
+
+            if (!fields[field_index + 1].empty() && is_numeric(fields[field_index + 1]))
+                gsv_data->elev[i] = std::stoi(fields[field_index + 1]);
+            else
+                gsv_data->elev[i] = DEFAULT_VAL_NUM;
+
+            if (!fields[field_index + 2].empty() && is_numeric(fields[field_index + 2]))
+                gsv_data->azim[i] = std::stoi(fields[field_index + 2]);
+            else
+                gsv_data->azim[i] = DEFAULT_VAL_NUM;
+
+            if (!fields[field_index + 3].empty() && is_numeric(fields[field_index + 3]))
+                gsv_data->snr[i] = std::stoi(fields[field_index + 3]);
+            else
+                gsv_data->snr[i] = DEFAULT_VAL_NUM;
+        }
     }
+
+    else 
+    {
+        gsv_data->num_msgs = DEFAULT_VAL_NUM;
+        gsv_data->msg_num = DEFAULT_VAL_NUM;
+        gsv_data->num_sats = DEFAULT_VAL_NUM;
+
+        int num_sats = (fields.size() - 4) / 4;
+        gsv_data->prn.resize(num_sats);
+        gsv_data->elev.resize(num_sats);
+        gsv_data->azim.resize(num_sats);
+        gsv_data->snr.resize(num_sats);
+
+        for (int i = 0; i < num_sats; i++) {
+            int field_index = i * 4 + 4;
+            gsv_data->prn[i] = DEFAULT_VAL_NUM;
+            gsv_data->elev[i] = DEFAULT_VAL_NUM;
+            gsv_data->azim[i] = DEFAULT_VAL_NUM;
+            gsv_data->snr[i] = DEFAULT_VAL_NUM;
+        }
+
+        return MISSING_PARAM_ERR;
+    }
+
+    return 0;
 }
 
-void parse_RMC_sentence(string sentence, RMC_data *rmc_data)
+int parse_RMC_sentence(string sentence, RMC_data *rmc_data)
 {
     // check if the sentence is a valid RMC sentence
     if (sentence.substr(0, 6) != "$GPRMC") {
-        return; // not a valid RMC sentence, so return
+        return WRONG_SENTENCE_ID_ERR; // not a valid RMC sentence, so return
     }
 
     // split the sentence into comma-separated fields
@@ -253,20 +307,54 @@ void parse_RMC_sentence(string sentence, RMC_data *rmc_data)
     while (std::getline(ss, field, ',')) {
         fields.push_back(field);
     }
+    
+    
+    if (fields.size() == 12)  // No field is missing
+    {
+        // extract all the parameters from nmea packet and store them
+        // in their respective fields in rmc_data structure
+        rmc_data->utc_time = fields[1];
+        rmc_data->status = fields[2][0];
+        rmc_data->latitude = fields[3];
+        rmc_data->latitude_dir = fields[4][0];
+        rmc_data->longitude = fields[5];
+        rmc_data->longitude_dir = fields[6][0];
 
-    // extract all the parameters from nmea packet and store them
-    // in their respective fields in rmc_data structure
-    rmc_data->utc_time = fields[1];
-    rmc_data->status = fields[2][0];
-    rmc_data->latitude = fields[3];
-    rmc_data->latitude_dir = fields[4][0];
-    rmc_data->longitude = fields[5];
-    rmc_data->longitude_dir = fields[6][0];
-    rmc_data->speed_knots = stod(fields[7]);
-    rmc_data->true_course = stod(fields[8]);
-    rmc_data->date = fields[9];
-    rmc_data->variation = stod(fields[10]);
-    rmc_data->variation_dir = fields[11][0];
+        if (!fields[7].empty() && is_numeric(fields[7]))
+            rmc_data->speed_knots = stod(fields[7]);
+        else
+            rmc_data->speed_knots = DEFAULT_VAL_NUM;
+    
+        if (!fields[8].empty() && is_numeric(fields[8]))
+            rmc_data->true_course = stod(fields[8]);
+        else
+            rmc_data->true_course = DEFAULT_VAL_NUM;
+
+        rmc_data->date = fields[9];
+
+        if (!fields[10].empty() && is_numeric(fields[10]))    
+            rmc_data->variation = stod(fields[10]);
+        else
+            rmc_data->variation = DEFAULT_VAL_NUM;
+
+        rmc_data->variation_dir = fields[11][0];
+    }
+    else
+    {
+        rmc_data->utc_time = "";
+        rmc_data->status = '\0';
+        rmc_data->latitude = "";
+        rmc_data->latitude_dir = '\0';
+        rmc_data->longitude = "";
+        rmc_data->longitude_dir = '\0';
+        rmc_data->speed_knots = DEFAULT_VAL_NUM;
+        rmc_data->true_course = DEFAULT_VAL_NUM;
+        rmc_data->date = "";
+        rmc_data->variation = DEFAULT_VAL_NUM;
+        rmc_data->variation_dir = '\0';
+        return MISSING_PARAM_ERR;
+    }
+    return 0;
 }
 
 
