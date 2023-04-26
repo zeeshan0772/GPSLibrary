@@ -467,11 +467,11 @@ int parse_GLL_sentence(string sentence, GLL_data *gll_data)
 
 
 
-void parse_ZDA_sentence(string sentence, ZDA_data *zda_data)
+int parse_ZDA_sentence(string sentence, ZDA_data *zda_data)
 {
     // check if the sentence is a valid ZDA sentence
     if (sentence.substr(0, 6) != "$GPZDA") {
-        return; // not a valid ZDA sentence, so return
+        return WRONG_SENTENCE_ID_ERR; // not a valid ZDA sentence, so return
     }
 
     // split the sentence into comma-separated fields
@@ -482,27 +482,81 @@ void parse_ZDA_sentence(string sentence, ZDA_data *zda_data)
         fields.push_back(field);
     }
 
-    // extract all the parameters from nmea packet and store them
-    // in their respective fields in zda_data structure
-    zda_data->hour = std::stoi(fields[1].substr(0, 2));
-    zda_data->minute = std::stoi(fields[1].substr(2, 2));
-    zda_data->second = std::stoi(fields[1].substr(4, 2));
-    zda_data->millisecond = std::stoi(fields[1].substr(7, 3));
-    zda_data->day = std::stoi(fields[2]);
-    zda_data->month = std::stoi(fields[3]);
-    zda_data->year = std::stoi(fields[4]);
-    zda_data->local_hour_offset = std::stoi(fields[5]);
-    zda_data->local_minute_offset = std::stoi(fields[6]);
+    if (fields.size() == 7)  // No field is missing
+    {
+        // extract all the parameters from nmea packet and store them
+        // in their respective fields in zda_data structure
+        if (!fields[1].substr(0,2).empty() && is_numeric(fields[1].substr(0,2)))
+            zda_data->hour = std::stoi(fields[1].substr(0, 2));
+        else
+            zda_data->hour = DEFAULT_VAL_NUM;
+
+        if (!fields[1].substr(2, 2).empty() && is_numeric(fields[1].substr(2, 2)))
+            zda_data->minute = std::stoi(fields[1].substr(2, 2));
+        else
+            zda_data->minute = DEFAULT_VAL_NUM;
+
+        if (!fields[1].substr(4, 2).empty() && is_numeric(fields[1].substr(4, 2)))
+            zda_data->second = std::stoi(fields[1].substr(4, 2));
+        else
+            zda_data->second = DEFAULT_VAL_NUM;
+
+        if (!fields[1].substr(7, 3).empty() && is_numeric(fields[1].substr(7, 3)))
+            zda_data->millisecond = std::stoi(fields[1].substr(7, 3));
+        else
+            zda_data->millisecond = DEFAULT_VAL_NUM;
+
+        if (!fields[2].empty() && is_numeric(fields[2]))
+            zda_data->day = std::stoi(fields[2]);
+        else
+            zda_data->day = DEFAULT_VAL_NUM;
+
+
+        if (!fields[3].empty() && is_numeric(fields[3]))
+            zda_data->month = std::stoi(fields[3]);
+        else
+            zda_data->month = DEFAULT_VAL_NUM;
+
+        if (!fields[4].empty() && is_numeric(fields[4]))
+            zda_data->year = std::stoi(fields[4]);
+        else
+            zda_data->year = DEFAULT_VAL_NUM;
+
+        if (!fields[5].empty() && is_numeric(fields[5]))
+            zda_data->local_hour_offset = std::stoi(fields[5]);
+        else
+            zda_data->local_hour_offset = DEFAULT_VAL_NUM;
+
+        if (!fields[6].empty() && is_numeric(fields[6]))
+            zda_data->local_minute_offset = std::stoi(fields[6]);        
+        else
+            zda_data->local_minute_offset = DEFAULT_VAL_NUM;
+    }
+    else
+    {
+        zda_data->hour = DEFAULT_VAL_NUM;
+        zda_data->minute = DEFAULT_VAL_NUM;
+        zda_data->second = DEFAULT_VAL_NUM;
+        zda_data->millisecond = DEFAULT_VAL_NUM;
+        zda_data->day = DEFAULT_VAL_NUM;
+        zda_data->month = DEFAULT_VAL_NUM;
+        zda_data->year = DEFAULT_VAL_NUM;
+        zda_data->local_hour_offset = DEFAULT_VAL_NUM;
+        zda_data->local_minute_offset = DEFAULT_VAL_NUM;
+        return MISSING_PARAM_ERR;
+    }
+
+    return 0;
 }
 
 
 
 
-void parse_GST_sentence(string sentence, GST_data *gst_data)
+int parse_GST_sentence(string sentence, GST_data *gst_data)
 {
     // check if the sentence is a valid GST sentence
     if (sentence.substr(0, 6) != "$GPGST") {
-        return; // not a valid GST sentence, so return
+        return WRONG_SENTENCE_ID_ERR; // not a valid GST sentence, so return
     }
 
     // split the sentence into comma-separated fields
@@ -513,38 +567,68 @@ void parse_GST_sentence(string sentence, GST_data *gst_data)
         fields.push_back(field);
     }
 
-    // extract all the parameters from nmea sentence and store them
-    // in their respective fields in gst_data structure
-    gst_data->utc_time = fields[1];
-    gst_data->rms_deviation = std::stod(fields[2]);
-    gst_data->semi_major_err = std::stod(fields[3]);
-    gst_data->semi_minor_err = std::stod(fields[4]);
-    if (!fields[5].empty())
-        gst_data->orientation_err = std::stod(fields[5]);
-    else
-        gst_data->orientation_err = 0;
+    if (fields.size() == 9)  // No field is missing
+    {    
+        // extract all the parameters from nmea sentence and store them
+        // in their respective fields in gst_data structure
+        gst_data->utc_time = fields[1];
 
-    if (!fields[6].empty())
-        gst_data->lat_err = std::stod(fields[6]);
-    else
-        gst_data->lat_err = 0;
-    
-    if (!fields[7].empty())
-        gst_data->lon_err = std::stod(fields[7]);
-    else
-        gst_data->lon_err = 0;
+        if (!fields[2].empty() && is_numeric(fields[2]))
+            gst_data->rms_deviation = std::stod(fields[2]);
+        else
+            gst_data->rms_deviation = DEFAULT_VAL_NUM;
 
-    if (!fields[8].empty())
-        gst_data->alt_err = std::stod(fields[8]);
+        if (!fields[3].empty() && is_numeric(fields[3]))
+            gst_data->semi_major_err = std::stod(fields[3]);
+        else
+            gst_data->semi_major_err = DEFAULT_VAL_NUM;
+
+        if (!fields[4].empty() && is_numeric(fields[4]))      
+           gst_data->semi_minor_err = std::stod(fields[4]);
+        else
+            gst_data->semi_minor_err = DEFAULT_VAL_NUM;
+
+        if (!fields[5].empty() && is_numeric(fields[5]))
+            gst_data->orientation_err = std::stod(fields[5]);
+        else
+            gst_data->orientation_err = DEFAULT_VAL_NUM;
+
+        if (!fields[6].empty() && is_numeric(fields[6]))
+            gst_data->lat_err = std::stod(fields[6]);
+        else
+            gst_data->lat_err = DEFAULT_VAL_NUM;
+        
+        if (!fields[7].empty() && is_numeric(fields[7]))
+            gst_data->lon_err = std::stod(fields[7]);
+        else
+            gst_data->lon_err = DEFAULT_VAL_NUM;
+
+        if (!fields[8].empty() && is_numeric(fields[8]))
+            gst_data->alt_err = std::stod(fields[8]);
+        else
+            gst_data->alt_err = DEFAULT_VAL_NUM;
+    }
     else
-        gst_data->lon_err = 0;
+    {
+        gst_data->utc_time = "";
+        gst_data->rms_deviation = DEFAULT_VAL_NUM;
+        gst_data->semi_major_err = DEFAULT_VAL_NUM;
+        gst_data->semi_minor_err = DEFAULT_VAL_NUM;
+        gst_data->orientation_err = DEFAULT_VAL_NUM;
+        gst_data->lat_err = DEFAULT_VAL_NUM;
+        gst_data->lon_err = DEFAULT_VAL_NUM;
+        gst_data->alt_err = DEFAULT_VAL_NUM;
+        return MISSING_PARAM_ERR;
+    }
+
+    return 0;
 }
 
-void parse_HDT_sentence(string sentence, HDT_data *hdt_data)
+int parse_HDT_sentence(string sentence, HDT_data *hdt_data)
 {
     // check if the sentence is a valid HDT sentence
     if (sentence.substr(0, 6) != "$GPHDT") {
-        return; // not a valid HDT sentence, so return
+        return WRONG_SENTENCE_ID_ERR; // not a valid HDT sentence, so return
     }
 
     // split the sentence into comma-separated fields
@@ -555,19 +639,29 @@ void parse_HDT_sentence(string sentence, HDT_data *hdt_data)
         fields.push_back(field);
     }
 
-    // extract all the parameters from nmea sentence and store them
-    // in their respective fields in gst_data structure
-    if (!fields[1].empty())
-        hdt_data->heading = std::stof(fields[1]);
+    if (fields.size() == 3)  // No field is missing
+    {
+        // extract the parameters from nmea sentence and store them
+        // in their respective fields in hdt_data structure
+        if (!fields[1].empty() && is_numeric(fields[1]))
+            hdt_data->heading = std::stof(fields[1]);
+        else
+            hdt_data->heading = DEFAULT_VAL_NUM;
+    }
     else
-        hdt_data->heading = 0.0;
+    {
+        hdt_data->heading = DEFAULT_VAL_NUM;
+        return MISSING_PARAM_ERR;
+    }
+
+    return 0;
 }
 
-void parse_GRS_sentence(string sentence, GRS_data *grs_data)
+int parse_GRS_sentence(string sentence, GRS_data *grs_data)
 {
     // check if the sentence is a valid GRS sentence
     if (sentence.substr(0, 6) != "$GPGRS") {
-        return; // not a valid GRS sentence, so return
+        return WRONG_SENTENCE_ID_ERR; // not a valid GRS sentence, so return
     }
 
     // split the sentence into comma-separated fields
@@ -578,76 +672,100 @@ void parse_GRS_sentence(string sentence, GRS_data *grs_data)
         fields.push_back(field);
     }
 
-    // extract all the parameters from nmea sentence and store them
-    // in their respective fields in gst_data structure
-    if (!fields[1].empty())
-        grs_data->utc_time = fields[1];
+
+    if (fields.size() == 3)  // No field is missing
+    {
+        // extract all the parameters from nmea sentence and store them
+        // in their respective fields in gst_data structure
+        if (!fields[1].empty() && is_numeric(fields[1]))
+            grs_data->utc_time = fields[1];
+        else
+            grs_data->utc_time = "";
+
+        if (!fields[2].empty() && is_numeric(fields[2]))
+            grs_data->mode = std::stoi(fields[2]);
+        else
+            grs_data->mode = 0;
+
+        if (!fields[3].empty() && is_numeric(fields[3]))
+            grs_data->residual1 = std::stof(fields[3]);
+        else
+            grs_data->residual1 = 0;
+        
+        if (!fields[4].empty() && is_numeric(fields[4]))
+            grs_data->residual2 = std::stof(fields[4]);
+        else
+            grs_data->residual2 = 0;
+
+        if (!fields[5].empty() && is_numeric(fields[5]))
+            grs_data->residual3 = std::stof(fields[5]);
+        else
+            grs_data->residual3 = 0;
+
+        if (!fields[6].empty() && is_numeric(fields[6]))
+            grs_data->residual4 = std::stof(fields[6]);
+        else
+            grs_data->residual4 = 0;
+
+        if (!fields[7].empty() && is_numeric(fields[7]))
+            grs_data->residual5 = std::stof(fields[7]);
+        else
+            grs_data->residual5 = 0;
+
+        if (!fields[8].empty() && is_numeric(fields[8]))
+            grs_data->residual6 = std::stof(fields[8]);
+        else
+            grs_data->residual6 = 0;
+
+        if (!fields[9].empty() && is_numeric(fields[9]))
+            grs_data->residual7 = std::stof(fields[9]);
+        else
+            grs_data->residual7 = 0;
+
+        if (!fields[10].empty() && is_numeric(fields[10]))
+            grs_data->residual8 = std::stof(fields[10]);
+        else
+            grs_data->residual8 = 0;
+
+        if (!fields[11].empty() && is_numeric(fields[11]))
+            grs_data->residual9 = std::stof(fields[11]);
+        else
+            grs_data->residual9 = 0;
+
+        if (!fields[12].empty() && is_numeric(fields[12]))
+            grs_data->residual10 = std::stof(fields[12]);
+        else
+            grs_data->residual10 = 0;
+
+        if (!fields[13].empty() && is_numeric(fields[13]))
+            grs_data->residual11 = std::stof(fields[13]);
+        else
+            grs_data->residual11 = 0;
+
+        if (!fields[14].empty() && is_numeric(fields[14]))
+            grs_data->residual12 = std::stof(fields[14]);
+        else
+            grs_data->residual12 = 0;
+    }
     else
+    {
         grs_data->utc_time = "";
+        grs_data->mode = DEFAULT_VAL_NUM;
+        grs_data->residual1 = DEFAULT_VAL_NUM;
+        grs_data->residual2 = DEFAULT_VAL_NUM;
+        grs_data->residual3 = DEFAULT_VAL_NUM;
+        grs_data->residual4 = DEFAULT_VAL_NUM;
+        grs_data->residual5 = DEFAULT_VAL_NUM;
+        grs_data->residual6 = DEFAULT_VAL_NUM;
+        grs_data->residual7 = DEFAULT_VAL_NUM;
+        grs_data->residual8 = DEFAULT_VAL_NUM;
+        grs_data->residual9 = DEFAULT_VAL_NUM;
+        grs_data->residual10 = DEFAULT_VAL_NUM;
+        grs_data->residual11 = DEFAULT_VAL_NUM;
+        grs_data->residual12 = DEFAULT_VAL_NUM;    
 
-    if (!fields[2].empty())
-        grs_data->mode = std::stoi(fields[2]);
-    else
-        grs_data->mode = 0;
+        return MISSING_PARAM_ERR;    
+    }
 
-    if (!fields[3].empty())
-        grs_data->residual1 = std::stof(fields[3]);
-    else
-        grs_data->residual1 = 0;
-    
-    if (!fields[4].empty())
-        grs_data->residual2 = std::stof(fields[4]);
-    else
-        grs_data->residual2 = 0;
-
-    if (!fields[5].empty())
-        grs_data->residual3 = std::stof(fields[5]);
-    else
-        grs_data->residual3 = 0;
-
-    if (!fields[6].empty())
-        grs_data->residual4 = std::stof(fields[6]);
-    else
-        grs_data->residual4 = 0;
-
-    if (!fields[7].empty())
-        grs_data->residual5 = std::stof(fields[7]);
-    else
-        grs_data->residual5 = 0;
-
-    if (!fields[8].empty())
-        grs_data->residual6 = std::stof(fields[8]);
-    else
-        grs_data->residual6 = 0;
-
-    if (!fields[9].empty())
-        grs_data->residual7 = std::stof(fields[9]);
-    else
-        grs_data->residual7 = 0;
-
-    if (!fields[10].empty())
-        grs_data->residual8 = std::stof(fields[10]);
-    else
-        grs_data->residual8 = 0;
-
-    if (!fields[11].empty())
-        grs_data->residual9 = std::stof(fields[11]);
-    else
-        grs_data->residual9 = 0;
-
-    if (!fields[12].empty())
-        grs_data->residual10 = std::stof(fields[12]);
-    else
-        grs_data->residual10 = 0;
-
-    if (!fields[13].empty())
-        grs_data->residual11 = std::stof(fields[13]);
-    else
-        grs_data->residual11 = 0;
-
-    if (!fields[14].empty())
-        grs_data->residual12 = std::stof(fields[14]);
-    else
-        grs_data->residual12 = 0;
-
+    return 0;
 }

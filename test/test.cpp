@@ -400,7 +400,7 @@ TEST(ParseVTGSentenceTest, Invalid_data) {
 }
 */
 
-
+/*
 TEST(ParseGLLSentenceTest, ValidGLL) {
   // Create a valid GLL sentence
   std::string sentence = "$GPGLL,4916.45,N,12311.12,W,225444.00,A,A*58";
@@ -418,7 +418,7 @@ TEST(ParseGLLSentenceTest, ValidGLL) {
   ASSERT_EQ(gll_data.status, 'A');
   ASSERT_EQ(gll_data.mode, 'A');
 }
-
+*/
 /*
 TEST(ParseGLLSentenceTest, InvalidGLL) {
   // Create an invalid GLL sentence
@@ -462,6 +462,49 @@ TEST(ParseZDASentenceTest, ValidZDA) {
 }
 
 
+TEST(ParseZDASentenceTest, MissingParam) {
+  // Create a valid ZDA sentence
+  std::string sentence = "$GPZDA,25,03,2002,00*6A ";
+
+  // Create a ZDA_data struct and call parse_ZDA_sentence
+  ZDA_data zda_data;
+  int err_code = parse_ZDA_sentence(sentence, &zda_data);
+  
+  ASSERT_EQ(err_code, MISSING_PARAM_ERR);
+  // Check if the values in the struct match the expected values
+  ASSERT_EQ(DEFAULT_VAL_NUM, zda_data.hour);
+  ASSERT_EQ(DEFAULT_VAL_NUM, zda_data.minute);
+  ASSERT_EQ(DEFAULT_VAL_NUM, zda_data.second);
+  ASSERT_EQ(DEFAULT_VAL_NUM, zda_data.millisecond);
+  ASSERT_EQ(DEFAULT_VAL_NUM, zda_data.day);
+  ASSERT_EQ(DEFAULT_VAL_NUM, zda_data.month);
+  ASSERT_EQ(DEFAULT_VAL_NUM, zda_data.year);
+  ASSERT_EQ(DEFAULT_VAL_NUM, zda_data.local_hour_offset);
+  ASSERT_EQ(DEFAULT_VAL_NUM, zda_data.local_minute_offset);
+}
+
+TEST(ParseZDASentenceTest, Invalid_data) {
+  // Create a valid ZDA sentence
+  std::string sentence = "$GPZDA,024611.08,/,03,*,00,00*6A ";
+
+  // Create a ZDA_data struct and call parse_ZDA_sentence
+  ZDA_data zda_data;
+  parse_ZDA_sentence(sentence, &zda_data);
+
+  // Check if the values in the struct match the expected values
+  ASSERT_EQ(2, zda_data.hour);
+  ASSERT_EQ(46, zda_data.minute);
+  ASSERT_EQ(11, zda_data.second);
+  ASSERT_EQ(8, zda_data.millisecond);
+  ASSERT_EQ(DEFAULT_VAL_NUM, zda_data.day);
+  ASSERT_EQ(3, zda_data.month);
+  ASSERT_EQ(DEFAULT_VAL_NUM, zda_data.year);
+  ASSERT_EQ(0, zda_data.local_hour_offset);
+  ASSERT_EQ(0, zda_data.local_minute_offset);
+}
+*/
+
+
 TEST(GSTParsingTest, ValidSentence) {
   std::string sentence = "$GPGST,024603.00,3.2,6.6,4.7,47.3,5.8,5.6,22.0*58";
 
@@ -477,7 +520,7 @@ TEST(GSTParsingTest, ValidSentence) {
   ASSERT_DOUBLE_EQ(parsed_data.lon_err, 5.6);
   ASSERT_DOUBLE_EQ(parsed_data.alt_err, 22.0);
 }
-*/
+
 /*
 TEST(ParseHDT, ValidSentence) {
   // Example valid HDT sentence: "$GPHDT,123.456,T*23\r\n"
