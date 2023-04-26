@@ -400,7 +400,7 @@ TEST(ParseVTGSentenceTest, Invalid_data) {
 }
 */
 
-/*
+
 TEST(ParseGLLSentenceTest, ValidGLL) {
   // Create a valid GLL sentence
   std::string sentence = "$GPGLL,4916.45,N,12311.12,W,225444.00,A,A*58";
@@ -418,7 +418,7 @@ TEST(ParseGLLSentenceTest, ValidGLL) {
   ASSERT_EQ(gll_data.status, 'A');
   ASSERT_EQ(gll_data.mode, 'A');
 }
-*/
+
 /*
 TEST(ParseGLLSentenceTest, InvalidGLL) {
   // Create an invalid GLL sentence

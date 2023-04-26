@@ -427,7 +427,7 @@ int parse_GLL_sentence(string sentence, GLL_data *gll_data)
 {
     // check if the sentence is a valid GLL sentence
     if (sentence.substr(0, 6) != "$GPGLL") {
-        return; // not a valid GLL sentence, so return
+        return WRONG_SENTENCE_ID_ERR; // not a valid GLL sentence, so return
     }
 
     // split the sentence into comma-separated fields
@@ -438,15 +438,31 @@ int parse_GLL_sentence(string sentence, GLL_data *gll_data)
         fields.push_back(field);
     }
 
-    // extract all the parameters from nmea packet and store them
-    // in their respective fields in gll_data structure
-    gll_data->latitude = fields[1];
-    gll_data->latitude_direction = fields[2][0];
-    gll_data->longitude = fields[3];
-    gll_data->longitude_direction = fields[4][0];
-    gll_data->utc_time = fields[5];
-    gll_data->status = fields[6][0];
-    gll_data->mode = fields[7][0];
+    if (fields.size() == 8)  // No field is missing
+    {
+        // extract all the parameters from nmea packet and store them
+        // in their respective fields in gll_data structure
+        gll_data->latitude = fields[1];
+        gll_data->latitude_direction = fields[2][0];
+        gll_data->longitude = fields[3];
+        gll_data->longitude_direction = fields[4][0];
+        gll_data->utc_time = fields[5];
+        gll_data->status = fields[6][0];
+        gll_data->mode = fields[7][0];
+    }
+    else
+    {
+        gll_data->latitude = "";
+        gll_data->latitude_direction = '\0';
+        gll_data->longitude = "";
+        gll_data->longitude_direction = '\0';
+        gll_data->utc_time = "";
+        gll_data->status = '\0';
+        gll_data->mode = '\0';
+        return MISSING_PARAM_ERR;
+    }
+
+    return 0;
 }
 
 
