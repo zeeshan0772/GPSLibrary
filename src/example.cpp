@@ -358,11 +358,11 @@ int parse_RMC_sentence(string sentence, RMC_data *rmc_data)
 }
 
 
-void parse_VTG_sentence(string sentence, VTG_data *vtg_data)
+int parse_VTG_sentence(string sentence, VTG_data *vtg_data)
 {
     // check if the sentence is a valid VTG sentence
     if (sentence.substr(0, 6) != "$GPVTG") {
-        return; // not a valid VTG sentence, so return
+        return WRONG_SENTENCE_ID_ERR; // not a valid VTG sentence, so return
     }
 
     // split the sentence into comma-separated fields
@@ -373,20 +373,57 @@ void parse_VTG_sentence(string sentence, VTG_data *vtg_data)
         fields.push_back(field);
     }
 
-    // extract all the parameters from nmea packet and store them
-    // in their respective fields in vtg_data structure
-    vtg_data->true_track_degrees = stod(fields[1]);
-    vtg_data->true_track_indicator = fields[2][0];
-    vtg_data->magnetic_track_degrees = stod(fields[3]);
-    vtg_data->magnetic_track_indicator = fields[4][0];
-    vtg_data->ground_speed_knots = stod(fields[5]);
-    vtg_data->ground_speed_knots_indicator = fields[6][0];
-    vtg_data->ground_speed_kph = stod(fields[7]);
-    vtg_data->ground_speed_kph_indicator = fields[8][0];
-    vtg_data->mode = fields[9][0];
+    if (fields.size() == 10)  // No field is missing
+    {
+        // extract all the parameters from nmea packet and store them
+        // in their respective fields in vtg_data structure
+        if (!fields[1].empty() && is_numeric(fields[1]))
+            vtg_data->true_track_degrees = stod(fields[1]);
+        else
+            vtg_data->true_track_degrees = DEFAULT_VAL_NUM;
+
+        vtg_data->true_track_indicator = fields[2][0];
+    
+        if (!fields[3].empty() && is_numeric(fields[3]))
+            vtg_data->magnetic_track_degrees = stod(fields[3]);
+        else
+            vtg_data->magnetic_track_degrees = DEFAULT_VAL_NUM;
+
+        vtg_data->magnetic_track_indicator = fields[4][0];
+    
+        if (!fields[5].empty() && is_numeric(fields[5]))
+            vtg_data->ground_speed_knots = stod(fields[5]);
+        else
+            vtg_data->ground_speed_knots = DEFAULT_VAL_NUM;
+
+        vtg_data->ground_speed_knots_indicator = fields[6][0];
+    
+        if (!fields[7].empty() && is_numeric(fields[7]))
+            vtg_data->ground_speed_kph = stod(fields[7]);
+        else
+            vtg_data->ground_speed_kph = DEFAULT_VAL_NUM;
+    
+        vtg_data->ground_speed_kph_indicator = fields[8][0];
+        vtg_data->mode = fields[9][0];
+    }    
+    else 
+    {
+        vtg_data->true_track_degrees = DEFAULT_VAL_NUM;
+        vtg_data->true_track_indicator = '\0';
+        vtg_data->magnetic_track_degrees = DEFAULT_VAL_NUM;
+        vtg_data->magnetic_track_indicator = '\0';
+        vtg_data->ground_speed_knots = DEFAULT_VAL_NUM;
+        vtg_data->ground_speed_knots_indicator = '\0';
+        vtg_data->ground_speed_kph = DEFAULT_VAL_NUM;
+        vtg_data->ground_speed_kph_indicator = '\0';
+        vtg_data->mode = '\0';
+        return MISSING_PARAM_ERR;
+    }
+
+    return 0;
 }
 
-void parse_GLL_sentence(string sentence, GLL_data *gll_data)
+int parse_GLL_sentence(string sentence, GLL_data *gll_data)
 {
     // check if the sentence is a valid GLL sentence
     if (sentence.substr(0, 6) != "$GPGLL") {

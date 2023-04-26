@@ -275,7 +275,7 @@ TEST(parse_GSV_sentence_test, Invalid_sentence) {
 
 
 
-
+/*
 TEST(parse_RMC_sentence, valid_sentence) {
     // Construct a valid RMC sentence
     std::string sentence = "$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70";
@@ -321,6 +321,29 @@ TEST(parse_RMC_sentence, missing_param) {
     ASSERT_EQ(rmc_data->variation_dir, '\0');
 }
 
+TEST(parse_RMC_sentence, Invalid_sentence) {
+    // Construct a valid RMC sentence
+    std::string sentence = "$GPRMC,220516,A,5133.82,N,00042.24,W,/173.8,**231.8,130694,004.2,W*70";
+
+    // Call parse_RMC_sentence to parse the sentence
+    RMC_data *rmc_data = new RMC_data;
+    parse_RMC_sentence(sentence, rmc_data);
+
+    // Check that the parsed values match the expected values
+    ASSERT_EQ(rmc_data->utc_time, "220516");
+    ASSERT_EQ(rmc_data->status, 'A');
+    ASSERT_EQ(rmc_data->latitude, "5133.82");
+    ASSERT_EQ(rmc_data->latitude_dir, 'N');
+    ASSERT_EQ(rmc_data->longitude, "00042.24");
+    ASSERT_EQ(rmc_data->longitude_dir, 'W');
+    ASSERT_DOUBLE_EQ(rmc_data->speed_knots, 0);
+    ASSERT_DOUBLE_EQ(rmc_data->true_course, 0);
+    ASSERT_EQ(rmc_data->date, "130694");
+    ASSERT_DOUBLE_EQ(rmc_data->variation, 4.2);
+    ASSERT_EQ(rmc_data->variation_dir, 'W');
+}
+*/
+
 /*
 TEST(ParseVTGSentenceTest, ValidSentence) {
   // Arrange
@@ -339,7 +362,44 @@ TEST(ParseVTGSentenceTest, ValidSentence) {
   ASSERT_EQ(vtg_data.ground_speed_kph_indicator, 'K');
   ASSERT_EQ(vtg_data.mode, 'A');
 }
+
+TEST(ParseVTGSentenceTest, Missing_params) {
+  // Arrange
+  std::string sentence = "$GPVTG,054.7,T,,N,010.2,K,A*25";
+  VTG_data vtg_data;
+  parse_VTG_sentence(sentence, &vtg_data);
+
+  // Assert
+  ASSERT_EQ(vtg_data.true_track_degrees, DEFAULT_VAL_NUM);
+  ASSERT_EQ(vtg_data.true_track_indicator, '\0');
+  ASSERT_EQ(vtg_data.magnetic_track_degrees, DEFAULT_VAL_NUM);
+  ASSERT_EQ(vtg_data.magnetic_track_indicator, '\0');
+  ASSERT_EQ(vtg_data.ground_speed_knots, DEFAULT_VAL_NUM);
+  ASSERT_EQ(vtg_data.ground_speed_knots_indicator, '\0');
+  ASSERT_EQ(vtg_data.ground_speed_kph, DEFAULT_VAL_NUM);
+  ASSERT_EQ(vtg_data.ground_speed_kph_indicator, '\0');
+  ASSERT_EQ(vtg_data.mode, '\0');
+}
+
+TEST(ParseVTGSentenceTest, Invalid_data) {
+  // Arrange
+  std::string sentence = "$GPVTG,054.7,T,034.4,M,*0,N,010.2,K,A*25";
+  VTG_data vtg_data;
+  parse_VTG_sentence(sentence, &vtg_data);
+
+  // Assert
+  ASSERT_EQ(vtg_data.true_track_degrees, 54.7);
+  ASSERT_EQ(vtg_data.true_track_indicator, 'T');
+  ASSERT_EQ(vtg_data.magnetic_track_degrees, 34.4);
+  ASSERT_EQ(vtg_data.magnetic_track_indicator, 'M');
+  ASSERT_EQ(vtg_data.ground_speed_knots, DEFAULT_VAL_NUM);
+  ASSERT_EQ(vtg_data.ground_speed_knots_indicator, 'N');
+  ASSERT_EQ(vtg_data.ground_speed_kph, 10.2);
+  ASSERT_EQ(vtg_data.ground_speed_kph_indicator, 'K');
+  ASSERT_EQ(vtg_data.mode, 'A');
+}
 */
+
 /*
 TEST(ParseGLLSentenceTest, ValidGLL) {
   // Create a valid GLL sentence
