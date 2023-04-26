@@ -603,8 +603,17 @@ int parse_GST_sentence(string sentence, GST_data *gst_data)
         else
             gst_data->lon_err = DEFAULT_VAL_NUM;
 
-        if (!fields[8].empty() && is_numeric(fields[8]))
-            gst_data->alt_err = std::stod(fields[8]);
+        if (!fields[8].empty())
+        {
+            // Find the position of the '*' character
+            std::size_t pos = fields[8].find('*');
+
+            // Extract the substring before the '*' character
+            std::string numStr = fields[8].substr(0, pos);
+
+            // Convert the substring to a double
+            gst_data->alt_err = std::stod(numStr);
+        }
         else
             gst_data->alt_err = DEFAULT_VAL_NUM;
     }
@@ -673,7 +682,7 @@ int parse_GRS_sentence(string sentence, GRS_data *grs_data)
     }
 
 
-    if (fields.size() == 3)  // No field is missing
+    if (fields.size() == 16)  // No field is missing
     {
         // extract all the parameters from nmea sentence and store them
         // in their respective fields in gst_data structure

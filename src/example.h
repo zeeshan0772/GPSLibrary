@@ -158,15 +158,6 @@ typedef struct {
 } GRS_data;
 
 
-/*
-// structure for storing parameters contained in GSV type sentence
-typedef struct {
-    // complete this code
-    // declare the elements of this struct to store NMEA RMC sentence fields
-    // example: $GPVTG,054.7,T,034.4,M,005.5,N,010.2,K,A*25
-} RMC_data;
-*/
-
 typedef struct {
     string sentence_code;
     union {

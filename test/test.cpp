@@ -2,20 +2,20 @@
 
 #include "example.h"
 
-/*
+
 TEST(get_nmea_sentence_code, get_code_from_sentence) {
         auto nmea_sentence = "$GPGGA,170834,4124.8963,N,08151.6838,W,1,05,1.5,280.2,M,-34.0,M,,,*59 ";
         auto nmea_code = "GPGGA";
         ASSERT_EQ(nmea_code, get_nmea_sentence_code(nmea_sentence));
 }
 
-// check when invalid nmea format
-TEST(get_nmea_sentence_code, handle_invalid_nmea_format) {
+// invalid nmea format
+TEST(get_nmea_sentence_code, invalid_nmea_format) {
         auto nmea_sentence = "#GPGGA,170-34.0,M,,,*59 ";
         auto returned_error = "NMEA_CODE_ERR";
         ASSERT_EQ(returned_error, get_nmea_sentence_code(nmea_sentence));
 }
-*/
+
 
 /*
 TEST(GGA_parser, Valid_data) {
@@ -504,7 +504,7 @@ TEST(ParseZDASentenceTest, Invalid_data) {
 }
 */
 
-
+/*
 TEST(GSTParsingTest, ValidSentence) {
   std::string sentence = "$GPGST,024603.00,3.2,6.6,4.7,47.3,5.8,5.6,22.0*58";
 
@@ -521,6 +521,39 @@ TEST(GSTParsingTest, ValidSentence) {
   ASSERT_DOUBLE_EQ(parsed_data.alt_err, 22.0);
 }
 
+TEST(GSTParsingTest, Missing_param) {
+  std::string sentence = "$GPGST,6.6,4.7,47.3,5.8,5.6,22.0*58";
+
+  GST_data parsed_data;
+  int err_code = parse_GST_sentence(sentence, &parsed_data);
+  ASSERT_EQ(err_code, MISSING_PARAM_ERR);
+  ASSERT_EQ(parsed_data.utc_time, "");
+  ASSERT_DOUBLE_EQ(parsed_data.rms_deviation, DEFAULT_VAL_NUM);
+  ASSERT_DOUBLE_EQ(parsed_data.semi_major_err, DEFAULT_VAL_NUM);
+  ASSERT_DOUBLE_EQ(parsed_data.semi_minor_err, DEFAULT_VAL_NUM);
+  ASSERT_DOUBLE_EQ(parsed_data.orientation_err, DEFAULT_VAL_NUM);
+  ASSERT_DOUBLE_EQ(parsed_data.lat_err, DEFAULT_VAL_NUM);
+  ASSERT_DOUBLE_EQ(parsed_data.lon_err, DEFAULT_VAL_NUM);
+  ASSERT_DOUBLE_EQ(parsed_data.alt_err, DEFAULT_VAL_NUM);
+}
+
+TEST(GSTParsingTest, InvalidSentence) {
+  std::string sentence = "$GPGST,024603.00,3.2,6.6,SI,47.3,TR,5.6,22.0*58";
+
+  GST_data parsed_data;
+  parse_GST_sentence(sentence, &parsed_data);
+
+  ASSERT_EQ(parsed_data.utc_time, "024603.00");
+  ASSERT_DOUBLE_EQ(parsed_data.rms_deviation, 3.2);
+  ASSERT_DOUBLE_EQ(parsed_data.semi_major_err, 6.6);
+  ASSERT_DOUBLE_EQ(parsed_data.semi_minor_err, DEFAULT_VAL_NUM);
+  ASSERT_DOUBLE_EQ(parsed_data.orientation_err, 47.3);
+  ASSERT_DOUBLE_EQ(parsed_data.lat_err, DEFAULT_VAL_NUM);
+  ASSERT_DOUBLE_EQ(parsed_data.lon_err, 5.6);
+  ASSERT_DOUBLE_EQ(parsed_data.alt_err, 22.0);
+}
+*/
+
 /*
 TEST(ParseHDT, ValidSentence) {
   // Example valid HDT sentence: "$GPHDT,123.456,T*23\r\n"
@@ -529,14 +562,14 @@ TEST(ParseHDT, ValidSentence) {
   parse_HDT_sentence(sentence, &hdt_data);
   ASSERT_FLOAT_EQ(hdt_data.heading, 123.456);
 }
-*/
-/*
+
+
 TEST(ParseHDT, InvalidSentence) {
   // Example invalid HDT sentence: "$GPVTG,1.2,T,3.4,M,5.6,N,10.4,K*4E\r\n"
   std::string sentence = "$GPVTG,1.2,T,3.4,M,5.6,N,10.4,K*4E\r\n";
   HDT_data hdt_data;
-  parse_HDT_sentence(sentence, &hdt_data);
-  ASSERT_EQ(hdt_data.heading, 0.0);
+  int err_code = parse_HDT_sentence(sentence, &hdt_data);
+  ASSERT_EQ(err_code, WRONG_SENTENCE_ID_ERR);
 }
 */
 
@@ -561,5 +594,4 @@ TEST(ParseGRS, ValidSentence) {
   ASSERT_FLOAT_EQ(grs_data.residual11, 0.0);
   ASSERT_FLOAT_EQ(grs_data.residual12, 1);
 }
-
 */
