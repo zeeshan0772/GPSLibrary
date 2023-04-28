@@ -1,4 +1,4 @@
-# GPA NMEA Parsing Library
+# GPS NMEA Parsing Library
 The GPS NMEA Library is a C++ library for parsing and handling NMEA sentences. It only works with the following NMEA sentence types:
 
 `GGA` - Global Positioning System Fix Data  
