@@ -3,9 +3,29 @@
 
 #include "example.h"
 
-void parse_nmea_sentence(string sentence)
+int parse_nmea_sentence(string sentence, GPS_data *gps_data)
 {
     string sentence_type = get_nmea_sentence_code(sentence);
+    if (sentence_type == "NMEA_CODE_ERR")
+    {
+        return INCORRECT_SENTENCE_CODE_ERR;
+    }
+    
+    int ret = calculateChecksum(sentence);
+    
+    if (ret == -1)
+    {
+        return CHECKSUM_ERR;
+    }
+
+    if (sentence_type == "GPGGA")
+    {
+        gps_data->sentence_type = "GGA";
+        GGA_data* ptr = new GGA_data;
+        int err_code = parse_GGA_sentence(sentence, ptr);
+        gps_data->data = ptr;
+        return err_code;
+    }
 }
 
 string get_nmea_sentence_code(string sentence)
@@ -27,16 +47,45 @@ string get_nmea_sentence_code(string sentence)
     return code;
 }
 
-/*
-void parse_GGA_sentence(string sentence, GGA_data *gga_data)
-{
-    // parse the string sentence
 
-    // extract all the parameters from nmea packet and store them
-    // in their respective fields in gga_data structure
-    // example: $GPGGA,170834,4124.8963,N,08151.6838,W,1,05,1.5,280.2,M,-34.0,M,,,*59
+int calculateChecksum(const std::string& sentence) {
+    int checksum = 0;
+    for (char c : sentence) 
+    {
+        if (c == '$') {
+            checksum = 0;
+        } else if (c == '*') {
+            break;
+        } else {
+            checksum ^= c;
+        }
+    }
+
+        std::stringstream ss;
+        ss << std::hex << checksum; // convert decimal to hexadecimal
+        string checksum_hex = ss.str();
+
+        std::string extracted_checksum;
+        size_t star_pos = sentence.find('*');
+        if (star_pos != std::string::npos && star_pos < sentence.length() - 1)
+        {
+                extracted_checksum = sentence.substr(star_pos + 1); // extract the substring after the star character
+        }
+        else
+        {
+                return -1;
+        }
+
+        if (checksum_hex != extracted_checksum)
+        {
+                return -1;
+        }
+        else
+        {
+                return 0;
+        }
 }
-*/
+
 
 // Returns true if the input string contains numeric data, false otherwise
 bool is_numeric(const std::string& input) {
@@ -58,12 +107,6 @@ bool is_numeric(const std::string& input) {
 }
 
 int parse_GGA_sentence(std::string sentence, GGA_data *gga_data) {
-    // check if the sentence is a valid GGA sentence
-    if (sentence.substr(0, 6) != "$GPGGA") {
-        return WRONG_SENTENCE_ID_ERR; // not a valid GGA sentence, so return
-    }
-
-
     // split the sentence into comma-separated fields
     std::istringstream ss(sentence);
     std::vector<std::string> fields;

@@ -11,6 +11,8 @@ using namespace std;
 
 #define MISSING_PARAM_ERR -1
 #define WRONG_SENTENCE_ID_ERR -2
+#define INCORRECT_SENTENCE_CODE_ERR -3
+#define CHECKSUM_ERR -4
 #define DEFAULT_VAL_NUM 0   // if numeric field is missing store this value in the struct field
 /*
     GGA - Global Positioning System Fix Data
@@ -159,16 +161,13 @@ typedef struct {
 
 
 typedef struct {
-    string sentence_code;
-    union {
-        GGA_data gga_data;
-
-        // other sentence types
-    } data;
+    string sentence_type;
+    void * data;
 } GPS_data;
 
-void parse_nmea_sentence(string sentence);
+int parse_nmea_sentence(string sentence, GPS_data * gps_data);
 string get_nmea_sentence_code(string sentence);
+int calculateChecksum(const std::string& sentence);
 
 int parse_GGA_sentence(string sentence, GGA_data *gga_data);
 int parse_GSA_sentence(string sentence, GSA_data *gsa_data);

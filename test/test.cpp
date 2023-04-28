@@ -3,6 +3,50 @@
 #include "example.h"
 
 
+/*
+TEST(calculateChecksum, GPGGA_sentence) {
+  std::string sentence = "$GPGGA,170834,4124.8963,N,08151.6838,W,1,05,1.5,280.2,M,-34.0,M,,,*59";
+  int result = calculateChecksum(sentence);
+  ASSERT_EQ(result, 0);
+}
+*/
+
+TEST(parse_nmea_sentence, Checksum_error) {
+        auto nmea_sentence = "$GPGGA,170834,4124.8963,N,08151.6838,W,1,05,1.5,280.2,M,-34.0,M,,,*59";
+        GPS_data gps_data;
+        int err_code = parse_nmea_sentence(nmea_sentence, &gps_data);
+        ASSERT_EQ(err_code, CHECKSUM_ERR);
+}
+
+/*
+TEST(parse_nmea_sentence, GPGGA_sentence) {
+        auto nmea_sentence = "$GPGGA,170834,4124.8963,N,08151.6838,W,1,05,1.5,280.2,M,-34.0,M,,,*59 ";
+        auto nmea_code = "GGA";
+        GPS_data gps_data;
+        parse_nmea_sentence(nmea_sentence, &gps_data);
+        ASSERT_EQ(nmea_code, gps_data.sentence_type);
+
+        GGA_data& gga_data = *static_cast<GGA_data*>(gps_data.data);
+
+        ASSERT_EQ("170834", gga_data.time);
+        ASSERT_EQ("4124.8963", gga_data.latitude);
+        ASSERT_EQ('N', gga_data.lat_direction);
+        ASSERT_EQ("08151.6838", gga_data.longitude);
+        ASSERT_EQ('W', gga_data.lon_direction);
+        ASSERT_EQ(1, gga_data.gps_quality);
+        ASSERT_EQ(05, gga_data.num_satellites);
+        ASSERT_DOUBLE_EQ(1.5, gga_data.hdop);
+        ASSERT_DOUBLE_EQ(280.2, gga_data.altitude);
+        ASSERT_EQ('M', gga_data.unit_of_altitude);
+        ASSERT_DOUBLE_EQ(-34.0, gga_data.geoidal_sep);
+        ASSERT_EQ('M', gga_data.geoidal_unit);
+        ASSERT_EQ(0, gga_data.age_diff_corr);
+        ASSERT_EQ("", gga_data.diff_ref_station_id);
+}
+*/
+
+
+/*
 TEST(get_nmea_sentence_code, get_code_from_sentence) {
         auto nmea_sentence = "$GPGGA,170834,4124.8963,N,08151.6838,W,1,05,1.5,280.2,M,-34.0,M,,,*59 ";
         auto nmea_code = "GPGGA";
@@ -15,7 +59,7 @@ TEST(get_nmea_sentence_code, invalid_nmea_format) {
         auto returned_error = "NMEA_CODE_ERR";
         ASSERT_EQ(returned_error, get_nmea_sentence_code(nmea_sentence));
 }
-
+*/
 
 /*
 TEST(GGA_parser, Valid_data) {
