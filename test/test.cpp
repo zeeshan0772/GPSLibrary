@@ -127,7 +127,7 @@ TEST(GGA_parser, data_with_wrong_strings) {
 }
 
 
-/*
+
 TEST(GSA_parser, Valid_data) {
     auto sentence = "$GPGSA,A,3,19,28,14,18,27,22,31,39,,,,,1.7,1.0,1.3,*34";
     GSA_data *gsa_data = new GSA_data;
@@ -200,9 +200,9 @@ TEST(GSA_parser, Invalid_data) {
     ASSERT_DOUBLE_EQ(1.0, gsa_data->hdop);
     ASSERT_DOUBLE_EQ(1.3, gsa_data->vdop);
 }
-*/
 
-/*
+
+
 TEST(parse_GSV_sentence_test, valid_sentence) {
   // create a sample GSV sentence
   std::string sentence = "$GPGSV,3,1,11,03,03,111,00,04,15,270,00,06,01,010,00,13,06,292,00*74";
@@ -313,11 +313,9 @@ TEST(parse_GSV_sentence_test, Invalid_sentence) {
   ASSERT_EQ(gsv_data->azim[3], 292);
   ASSERT_EQ(gsv_data->snr[3], 0);
 }
-*/
 
 
 
-/*
 TEST(parse_RMC_sentence, valid_sentence) {
     // Construct a valid RMC sentence
     std::string sentence = "$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,231.8,130694,004.2,W*70";
@@ -384,9 +382,9 @@ TEST(parse_RMC_sentence, Invalid_sentence) {
     ASSERT_DOUBLE_EQ(rmc_data->variation, 4.2);
     ASSERT_EQ(rmc_data->variation_dir, 'W');
 }
-*/
 
-/*
+
+
 TEST(ParseVTGSentenceTest, ValidSentence) {
   // Arrange
   std::string sentence = "$GPVTG,054.7,T,034.4,M,005.5,N,010.2,K,A*25";
@@ -440,9 +438,9 @@ TEST(ParseVTGSentenceTest, Invalid_data) {
   ASSERT_EQ(vtg_data.ground_speed_kph_indicator, 'K');
   ASSERT_EQ(vtg_data.mode, 'A');
 }
-*/
 
-/*
+
+
 TEST(ParseGLLSentenceTest, ValidGLL) {
   // Create a valid GLL sentence
   std::string sentence = "$GPGLL,4916.45,N,12311.12,W,225444.00,A,A*58";
@@ -460,11 +458,12 @@ TEST(ParseGLLSentenceTest, ValidGLL) {
   ASSERT_EQ(gll_data.status, 'A');
   ASSERT_EQ(gll_data.mode, 'A');
 }
-*/
-/*
+
+
+
 TEST(ParseGLLSentenceTest, InvalidGLL) {
   // Create an invalid GLL sentence
-  std::string sentence = "$GPGLL,4916.45,N,12311.12,W,225444.00,V,N*5C";
+  std::string sentence = "$GPGLL,W,225444.00,A,A*58";
 
   // Create a GLL_data struct and call parse_GLL_sentence
   GLL_data gll_data;
@@ -479,10 +478,10 @@ TEST(ParseGLLSentenceTest, InvalidGLL) {
   ASSERT_EQ(gll_data.status, 0);
   ASSERT_EQ(gll_data.mode, 0);
 }
-*/
 
 
-/*
+
+
 TEST(ParseZDASentenceTest, ValidZDA) {
   // Create a valid ZDA sentence
   std::string sentence = "$GPZDA,024611.08,25,03,2002,00,00*6A ";
@@ -544,9 +543,8 @@ TEST(ParseZDASentenceTest, Invalid_data) {
   ASSERT_EQ(0, zda_data.local_hour_offset);
   ASSERT_EQ(0, zda_data.local_minute_offset);
 }
-*/
 
-/*
+
 TEST(GSTParsingTest, ValidSentence) {
   std::string sentence = "$GPGST,024603.00,3.2,6.6,4.7,47.3,5.8,5.6,22.0*58";
 
@@ -594,9 +592,9 @@ TEST(GSTParsingTest, InvalidSentence) {
   ASSERT_DOUBLE_EQ(parsed_data.lon_err, 5.6);
   ASSERT_DOUBLE_EQ(parsed_data.alt_err, 22.0);
 }
-*/
 
-/*
+
+
 TEST(ParseHDT, ValidSentence) {
   // Example valid HDT sentence: "$GPHDT,123.456,T*23\r\n"
   std::string sentence = "$GPHDT,123.456,T*23\r\n";
@@ -613,9 +611,9 @@ TEST(ParseHDT, InvalidSentence) {
   int err_code = parse_HDT_sentence(sentence, &hdt_data);
   ASSERT_EQ(err_code, WRONG_SENTENCE_ID_ERR);
 }
-*/
 
-/*
+
+
 TEST(ParseGRS, ValidSentence) {
   // Example valid GRS sentence: "$GPGRS,024603.00,1,-1.8,-2.7,0.3,,,,,,,,,*6C"
   std::string sentence = "$GPGRS,220320.0,0,-0.8,-0.2,-0.1,-0.2,0.8,0.6,,,,,,1,*55"; 
@@ -636,4 +634,3 @@ TEST(ParseGRS, ValidSentence) {
   ASSERT_FLOAT_EQ(grs_data.residual11, 0.0);
   ASSERT_FLOAT_EQ(grs_data.residual12, 1);
 }
-*/
