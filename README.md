@@ -48,6 +48,7 @@ The `GPS_data` struct is used to store data that has been parsed from NMEA sente
 The library provides error codes for invalid NMEA sentences. These error codes can be used to identify and handle invalid NMEA sentences.
 
 ## How to build this library
+The library has been tested successfully on `Ubuntu 22.04.1 LTS`.
 
 ```bash
 cmake -S. -Bbuild 

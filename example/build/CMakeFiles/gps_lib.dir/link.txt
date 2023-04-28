@@ -1,2 +1,0 @@
-/usr/bin/ar qc libgps_lib.a CMakeFiles/gps_lib.dir/home/zeeshan/Desktop/GPS_Library/src/gps_lib.cpp.o
-/usr/bin/ranlib libgps_lib.a
