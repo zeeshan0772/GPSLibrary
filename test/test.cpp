@@ -16,7 +16,7 @@ TEST(parse_nmea_sentence, No_checksum_error) {
         int err_code = parse_nmea_sentence(nmea_sentence, &gps_data);
         ASSERT_EQ(err_code, 0);
 }
-/*
+
 TEST(parse_nmea_sentence, GPGGA_sentence) {
         auto nmea_sentence = "$GPGGA,170834,4124.8963,N,08151.6838,W,1,05,1.5,280.2,M,-34.0,M,,,*59";
         auto nmea_code = "GGA";
@@ -41,10 +41,10 @@ TEST(parse_nmea_sentence, GPGGA_sentence) {
         ASSERT_EQ(0, gga_data.age_diff_corr);
         ASSERT_EQ("", gga_data.diff_ref_station_id);
 }
-*/
 
 
-/*
+
+
 TEST(get_nmea_sentence_code, get_code_from_sentence) {
         auto nmea_sentence = "$GPGGA,170834,4124.8963,N,08151.6838,W,1,05,1.5,280.2,M,-34.0,M,,,*59 ";
         auto nmea_code = "GPGGA";
@@ -57,9 +57,9 @@ TEST(get_nmea_sentence_code, invalid_nmea_format) {
         auto returned_error = "NMEA_CODE_ERR";
         ASSERT_EQ(returned_error, get_nmea_sentence_code(nmea_sentence));
 }
-*/
 
-/*
+
+
 TEST(GGA_parser, Valid_data) {
         auto sentence = "$GPGGA,170834,4124.8963,N,08151.6838,W,1,05,1.5,280.2,M,-34.0,M,,,*59";
 
@@ -125,7 +125,7 @@ TEST(GGA_parser, data_with_wrong_strings) {
         ASSERT_EQ(0, gga_data->age_diff_corr);
         ASSERT_EQ("", gga_data->diff_ref_station_id);
 }
-*/
+
 
 /*
 TEST(GSA_parser, Valid_data) {

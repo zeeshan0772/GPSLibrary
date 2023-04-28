@@ -3,6 +3,12 @@
 
 #include "gps_lib.h"
 
+/**
+    @brief Parse an NMEA sentence and store the parsed data in the provided GPS_data structure.
+    @param sentence The NMEA sentence to be parsed.
+    @param gps_data A pointer to a GPS_data structure to store the parsed data.
+    @return int An error code indicating if there was an issue with the provided sentence.
+*/
 int parse_nmea_sentence(string sentence, GPS_data *gps_data)
 {
     string sentence_type = get_nmea_sentence_code(sentence);
@@ -18,6 +24,7 @@ int parse_nmea_sentence(string sentence, GPS_data *gps_data)
         return CHECKSUM_ERR;
     }
 
+    // If the sentence type is GPGGA, parse the sentence and store data in GPS_data structure
     if (sentence_type == "GPGGA")
     {
         gps_data->sentence_type = "GGA";
@@ -100,6 +107,13 @@ int parse_nmea_sentence(string sentence, GPS_data *gps_data)
     }
 }
 
+
+/**
+
+    @brief Returns the NMEA code of an NMEA sentence.
+    @param sentence The NMEA sentence string to extract the code from.
+    @return The NMEA code as a string. If the sentence string doesn't start with '$', returns "NMEA_CODE_ERR". If the sentence string starts with '$' but doesn't contain a comma, returns an empty string.
+*/
 string get_nmea_sentence_code(string sentence)
 {
     string code;
@@ -119,7 +133,14 @@ string get_nmea_sentence_code(string sentence)
     return code;
 }
 
+/**
 
+    @brief Calculates the checksum of an NMEA sentence and compares it to the extracted checksum from the sentence. If they match, returns 0, otherwise returns -1.
+
+    @param sentence a string representing an NMEA sentence
+
+    @return an integer error code indicating whether the checksum is correct or not (-1 for incorrect, 0 for correct)
+*/
 int calculateChecksum(const std::string& sentence) {
     int checksum = 0;
     for (char c : sentence) 
@@ -177,6 +198,14 @@ bool is_numeric(const std::string& input) {
     // All characters are numeric, return true
     return true;
 }
+
+/**
+
+    @brief Parse a GGA NMEA sentence and store the parsed data in the provided GGA_data structure.
+    @param sentence The GGA NMEA sentence to be parsed.
+    @param gga_data A pointer to a GGA_data structure to store the parsed data.
+    @return int An error code indicating if there was an issue with the provided sentence.
+*/
 
 int parse_GGA_sentence(std::string sentence, GGA_data *gga_data) {
     // split the sentence into comma-separated fields
@@ -255,6 +284,19 @@ int parse_GGA_sentence(std::string sentence, GGA_data *gga_data) {
 
     return 0;
 }
+
+/**
+
+    Parses the given GSA NMEA sentence and fills in the given GSA_data struct with the parsed values.
+    @param sentence The GSA NMEA sentence to be parsed.
+    @param gsa_data Pointer to a GSA_data struct where the parsed values will be stored.
+    @return 0 if the sentence was successfully parsed, otherwise an error code:
+    MISSING_PARAM_ERR if a required parameter is missing,
+
+    INCORRECT_SENTENCE_CODE_ERR if the sentence does not match the expected format for a GSA sentence,
+    
+    CHECKSUM_ERR if the checksum of the sentence is incorrect.
+*/
 
 int parse_GSA_sentence(string sentence, GSA_data *gsa_data) {
     // check if the sentence is a valid GSA sentence

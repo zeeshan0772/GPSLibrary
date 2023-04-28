@@ -1,20 +1,6 @@
-
 /*
-In the C and C++ programming languages, #pragma once is a non-standard 
-but widely supported preprocessor directive designed to cause the current 
-source file to be included only once in a single compilation.
-*/
-#pragma once
-#include <bits/stdc++.h>
-#include <vector>
-using namespace std;
+This library only works for these NMEA sentences:
 
-#define MISSING_PARAM_ERR -1
-#define WRONG_SENTENCE_ID_ERR -2
-#define INCORRECT_SENTENCE_CODE_ERR -3
-#define CHECKSUM_ERR -4
-#define DEFAULT_VAL_NUM 0   // if numeric field is missing store this value in the struct field
-/*
     GGA - Global Positioning System Fix Data
     GSA - GPS DOP and Active Satellites
     GSV - GPS Satellites in View
@@ -26,6 +12,30 @@ using namespace std;
     HDT - Heading - True
     GRS - GNSS Range Residuals
 */
+
+#pragma once
+#include <bits/stdc++.h>
+#include <vector>
+using namespace std;
+
+// Error codes
+
+// Indicates that one or more parameters are missing from the NMEA sentence.
+#define MISSING_PARAM_ERR -1
+
+// Indicates that the sentence ID in the NMEA sentence is incorrect.
+#define WRONG_SENTENCE_ID_ERR -2
+
+// Indicates that the NMEA sentence code is incorrect.
+#define INCORRECT_SENTENCE_CODE_ERR -3
+
+// Indicates that the checksum in the NMEA sentence is incorrect.
+#define CHECKSUM_ERR -4
+
+
+// Default value used for numeric fields that are missing from the NMEA sentences.
+#define DEFAULT_VAL_NUM 0
+
 
 // structure for storing parameters contained in GGA type packet
 typedef struct {      
@@ -108,8 +118,6 @@ typedef struct {
 } GLL_data;
 
 
-
-
 // structure for storing parameters contained in ZDA type packet
 typedef struct {
     int day; // day of month (1-31)
@@ -159,11 +167,27 @@ typedef struct {
     float residual12; // range residual 12
 } GRS_data;
 
-
+/**
+ * @brief A struct that represents parsed GPS data.
+ *
+ * This struct contains the type of the NMEA sentence (e.g. GGA or RMC) and a pointer to the parsed data.
+ * The parsed data is stored as a void pointer and must be cast to the appropriate data type based on the sentence type.
+ * 
+ * Example usage:
+ * ```
+ * GPS_data gps_data;
+ * int err_code = parse_nmea_sentence(nmea_sentence, &gps_data);
+ * if (err_code == 0) {
+ *     GGA_data& gga_data = *static_cast<GGA_data*>(gps_data.data);
+ *     // access fields of gga_data
+ * }
+ * ```
+ */
 typedef struct {
-    string sentence_type;
-    void * data;
+    string sentence_type;   // the type of NMEA sentence that the data was parsed from.
+    void * data;    // A pointer to the structure containing parsed data. The struct depends on the sentence type.
 } GPS_data;
+
 
 int parse_nmea_sentence(string sentence, GPS_data * gps_data);
 string get_nmea_sentence_code(string sentence);

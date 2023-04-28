@@ -373,7 +373,7 @@ test/CMakeFiles/unit_tests.dir/test.cpp.o: ../test/test.cpp \
   _deps/gtest-src/googletest/include/gtest/gtest-typed-test.h \
   _deps/gtest-src/googletest/include/gtest/gtest_pred_impl.h \
   _deps/gtest-src/googletest/include/gtest/gtest_prod.h \
-  ../src/example.h \
+  ../src/gps_lib.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/stdc++.h \
   /usr/include/c++/11/cfloat \
   /usr/include/c++/11/ciso646 \
@@ -615,7 +615,7 @@ test/CMakeFiles/unit_tests.dir/test.cpp.o: ../test/test.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/math-vector.h:
 
-../src/example.h:
+../src/gps_lib.h:
 
 _deps/gtest-src/googletest/include/gtest/gtest_prod.h:
 
