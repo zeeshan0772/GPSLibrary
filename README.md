@@ -1,27 +1,27 @@
 # GPA NMEA Parsing Library
 The GPS NMEA Library is a C++ library for parsing and handling NMEA sentences. It only works with the following NMEA sentence types:
 
-`GGA` - Global Positioning System Fix Data
-`GSA` - GPS DOP and Active Satellites
-`GSV` - GPS Satellites in View
-`RMC` - Recommended Minimum Specific GNSS Data
-`VTG` - Course Over Ground and Ground Speed
-`GLL` - Geographic Position, Latitude/Longitude
-`ZDA` - Time and Date
-`GST` - GNSS Pseudorange Noise Statistics
-`HDT` - Heading - True
-`GRS` - GNSS Range Residuals
+`GGA` - Global Positioning System Fix Data  
+`GSA` - GPS DOP and Active Satellites  
+`GSV` - GPS Satellites in View  
+`RMC` - Recommended Minimum Specific GNSS Data  
+`VTG` - Course Over Ground and Ground Speed  
+`GLL` - Geographic Position, Latitude/Longitude  
+`ZDA` - Time and Date  
+`GST` - GNSS Pseudorange Noise Statistics  
+`HDT` - Heading - True  
+`GRS` - GNSS Range Residuals  
 
 The library provides error codes for invalid NMEA sentences. These are:
 
-`MISSING_PARAM_ERR`: Indicates that one or more parameters are missing from the NMEA sentence.
-`WRONG_SENTENCE_ID_ERR`: Indicates that the sentence ID in the NMEA sentence is incorrect.
-`INCORRECT_SENTENCE_CODE_ERR`: Indicates that the NMEA sentence code is incorrect.
-`CHECKSUM_ERR`: Indicates that the checksum in the NMEA sentence is incorrect.
+`MISSING_PARAM_ERR`: Indicates that one or more parameters are missing from the NMEA sentence.  
+`WRONG_SENTENCE_ID_ERR`: Indicates that the sentence ID in the NMEA sentence is incorrect.  
+`INCORRECT_SENTENCE_CODE_ERR`: Indicates that the NMEA sentence code is incorrect.  
+`CHECKSUM_ERR`: Indicates that the checksum in the NMEA sentence is incorrect.  
 
 ## Usage
 
-To use the library, simply include the nmea.h header file in your project. The library provides the following structures for storing parameters contained in NMEA sentences:
+To use the library, simply include the `gps_lib.h` header file in your project. The library provides the following structures for storing parameters contained in NMEA sentences:
 ```
 GGA_data
 GSA_data
