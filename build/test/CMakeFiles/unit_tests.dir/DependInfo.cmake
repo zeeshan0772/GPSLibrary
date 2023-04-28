@@ -13,7 +13,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/zeeshan/Desktop/GPS Library/build/src/CMakeFiles/example.dir/DependInfo.cmake"
+  "/home/zeeshan/Desktop/GPS Library/build/src/CMakeFiles/gps_lib.dir/DependInfo.cmake"
   "/home/zeeshan/Desktop/GPS Library/build/_deps/gtest-build/googletest/CMakeFiles/gtest_main.dir/DependInfo.cmake"
   "/home/zeeshan/Desktop/GPS Library/build/_deps/gtest-build/googletest/CMakeFiles/gtest.dir/DependInfo.cmake"
   )

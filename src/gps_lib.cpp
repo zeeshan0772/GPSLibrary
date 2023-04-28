@@ -1,7 +1,7 @@
 // write code for handling missing fields
 // write code for handling incomplete packets
 
-#include "example.h"
+#include "gps_lib.h"
 
 int parse_nmea_sentence(string sentence, GPS_data *gps_data)
 {
@@ -23,6 +23,78 @@ int parse_nmea_sentence(string sentence, GPS_data *gps_data)
         gps_data->sentence_type = "GGA";
         GGA_data* ptr = new GGA_data;
         int err_code = parse_GGA_sentence(sentence, ptr);
+        gps_data->data = ptr;
+        return err_code;
+    }
+    else if (sentence_type == "GPGSA")
+    {
+        gps_data->sentence_type = "GSA";
+        GSA_data* ptr = new GSA_data;
+        int err_code = parse_GSA_sentence(sentence, ptr);
+        gps_data->data = ptr;
+        return err_code;
+    }
+    else if (sentence_type == "GPGSV")
+    {
+        gps_data->sentence_type = "GSV";
+        GSV_data* ptr = new GSV_data;
+        int err_code = parse_GSV_sentence(sentence, ptr);
+        gps_data->data = ptr;
+        return err_code;
+    }
+    else if (sentence_type == "GPRMC")
+    {
+        gps_data->sentence_type = "RMC";
+        RMC_data* ptr = new RMC_data;
+        int err_code = parse_RMC_sentence(sentence, ptr);
+        gps_data->data = ptr;
+        return err_code;
+    }
+    else if (sentence_type == "GPVTG")
+    {
+        gps_data->sentence_type = "VTG";
+        VTG_data* ptr = new VTG_data;
+        int err_code = parse_VTG_sentence(sentence, ptr);
+        gps_data->data = ptr;
+        return err_code;
+    }
+    else if (sentence_type == "GPGLL")
+    {
+        gps_data->sentence_type = "GLL";
+        GLL_data* ptr = new GLL_data;
+        int err_code = parse_GLL_sentence(sentence, ptr);
+        gps_data->data = ptr;
+        return err_code;
+    }
+    else if (sentence_type == "GPZDA")
+    {
+        gps_data->sentence_type = "ZDA";
+        ZDA_data* ptr = new ZDA_data;
+        int err_code = parse_ZDA_sentence(sentence, ptr);
+        gps_data->data = ptr;
+        return err_code;
+    }
+    else if (sentence_type == "GPGST")
+    {
+        gps_data->sentence_type = "GST";
+        GST_data* ptr = new GST_data;
+        int err_code = parse_GST_sentence(sentence, ptr);
+        gps_data->data = ptr;
+        return err_code;
+    }
+    else if (sentence_type == "GPHDT")
+    {
+        gps_data->sentence_type = "HDT";
+        HDT_data* ptr = new HDT_data;
+        int err_code = parse_HDT_sentence(sentence, ptr);
+        gps_data->data = ptr;
+        return err_code;
+    }
+    else if (sentence_type == "GPGRS")
+    {
+        gps_data->sentence_type = "GRS";
+        GRS_data* ptr = new GRS_data;
+        int err_code = parse_GRS_sentence(sentence, ptr);
         gps_data->data = ptr;
         return err_code;
     }

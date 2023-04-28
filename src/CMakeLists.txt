@@ -1,13 +1,13 @@
-add_library(example)
+add_library(gps_lib)
 
-target_sources(example
+target_sources(gps_lib
   PRIVATE
-    example.cpp
+    gps_lib.cpp
   PUBLIC
-    example.h
+    gps_lib.h
   )
 
-target_include_directories(example
+target_include_directories(gps_lib
   PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}
   )
@@ -15,11 +15,11 @@ target_include_directories(example
 # we use this to get code coverage
 # flags are only valid with the GNU compiler and on Linux
 if(CMAKE_CXX_COMPILER_ID MATCHES GNU AND CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux")
-  target_compile_options(example
+  target_compile_options(gps_lib
     PUBLIC
       "--coverage"
     )
-  target_link_options(example
+  target_link_options(gps_lib
     INTERFACE
       "--coverage"
     )

@@ -172,42 +172,42 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-src/CMakeFiles/example.dir/rule:
-	cd "/home/zeeshan/Desktop/GPS Library/build" && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/CMakeFiles/example.dir/rule
-.PHONY : src/CMakeFiles/example.dir/rule
+src/CMakeFiles/gps_lib.dir/rule:
+	cd "/home/zeeshan/Desktop/GPS Library/build" && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/CMakeFiles/gps_lib.dir/rule
+.PHONY : src/CMakeFiles/gps_lib.dir/rule
 
 # Convenience name for target.
-example: src/CMakeFiles/example.dir/rule
-.PHONY : example
+gps_lib: src/CMakeFiles/gps_lib.dir/rule
+.PHONY : gps_lib
 
 # fast build rule for target.
-example/fast:
-	cd "/home/zeeshan/Desktop/GPS Library/build" && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/example.dir/build.make src/CMakeFiles/example.dir/build
-.PHONY : example/fast
+gps_lib/fast:
+	cd "/home/zeeshan/Desktop/GPS Library/build" && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/gps_lib.dir/build.make src/CMakeFiles/gps_lib.dir/build
+.PHONY : gps_lib/fast
 
-example.o: example.cpp.o
-.PHONY : example.o
+gps_lib.o: gps_lib.cpp.o
+.PHONY : gps_lib.o
 
 # target to build an object file
-example.cpp.o:
-	cd "/home/zeeshan/Desktop/GPS Library/build" && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/example.dir/build.make src/CMakeFiles/example.dir/example.cpp.o
-.PHONY : example.cpp.o
+gps_lib.cpp.o:
+	cd "/home/zeeshan/Desktop/GPS Library/build" && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/gps_lib.dir/build.make src/CMakeFiles/gps_lib.dir/gps_lib.cpp.o
+.PHONY : gps_lib.cpp.o
 
-example.i: example.cpp.i
-.PHONY : example.i
+gps_lib.i: gps_lib.cpp.i
+.PHONY : gps_lib.i
 
 # target to preprocess a source file
-example.cpp.i:
-	cd "/home/zeeshan/Desktop/GPS Library/build" && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/example.dir/build.make src/CMakeFiles/example.dir/example.cpp.i
-.PHONY : example.cpp.i
+gps_lib.cpp.i:
+	cd "/home/zeeshan/Desktop/GPS Library/build" && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/gps_lib.dir/build.make src/CMakeFiles/gps_lib.dir/gps_lib.cpp.i
+.PHONY : gps_lib.cpp.i
 
-example.s: example.cpp.s
-.PHONY : example.s
+gps_lib.s: gps_lib.cpp.s
+.PHONY : gps_lib.s
 
 # target to generate assembly for a file
-example.cpp.s:
-	cd "/home/zeeshan/Desktop/GPS Library/build" && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/example.dir/build.make src/CMakeFiles/example.dir/example.cpp.s
-.PHONY : example.cpp.s
+gps_lib.cpp.s:
+	cd "/home/zeeshan/Desktop/GPS Library/build" && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/gps_lib.dir/build.make src/CMakeFiles/gps_lib.dir/gps_lib.cpp.s
+.PHONY : gps_lib.cpp.s
 
 # Help Target
 help:
@@ -222,10 +222,10 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... test"
-	@echo "... example"
-	@echo "... example.o"
-	@echo "... example.i"
-	@echo "... example.s"
+	@echo "... gps_lib"
+	@echo "... gps_lib.o"
+	@echo "... gps_lib.i"
+	@echo "... gps_lib.s"
 .PHONY : help
 
 

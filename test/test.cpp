@@ -1,26 +1,24 @@
 #include <gtest/gtest.h>
 
-#include "example.h"
+#include "gps_lib.h"
 
-
-/*
-TEST(calculateChecksum, GPGGA_sentence) {
-  std::string sentence = "$GPGGA,170834,4124.8963,N,08151.6838,W,1,05,1.5,280.2,M,-34.0,M,,,*59";
-  int result = calculateChecksum(sentence);
-  ASSERT_EQ(result, 0);
-}
-*/
 
 TEST(parse_nmea_sentence, Checksum_error) {
-        auto nmea_sentence = "$GPGGA,170834,4124.8963,N,08151.6838,W,1,05,1.5,280.2,M,-34.0,M,,,*59";
+        auto nmea_sentence = "$GPGGA,170834,N,08151.6838,W,1,05,1.5,280.2,M,-34.0,M,,,*59"; // this sentence has incorrect checksum
         GPS_data gps_data;
         int err_code = parse_nmea_sentence(nmea_sentence, &gps_data);
         ASSERT_EQ(err_code, CHECKSUM_ERR);
 }
 
+TEST(parse_nmea_sentence, No_checksum_error) {
+        auto nmea_sentence = "$GPGGA,170834,4124.8963,N,08151.6838,W,1,05,1.5,280.2,M,-34.0,M,,,*59";
+        GPS_data gps_data;
+        int err_code = parse_nmea_sentence(nmea_sentence, &gps_data);
+        ASSERT_EQ(err_code, 0);
+}
 /*
 TEST(parse_nmea_sentence, GPGGA_sentence) {
-        auto nmea_sentence = "$GPGGA,170834,4124.8963,N,08151.6838,W,1,05,1.5,280.2,M,-34.0,M,,,*59 ";
+        auto nmea_sentence = "$GPGGA,170834,4124.8963,N,08151.6838,W,1,05,1.5,280.2,M,-34.0,M,,,*59";
         auto nmea_code = "GGA";
         GPS_data gps_data;
         parse_nmea_sentence(nmea_sentence, &gps_data);

@@ -172,17 +172,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named example
+# Target rules for targets named gps_lib
 
 # Build rule for target.
-example: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 example
-.PHONY : example
+gps_lib: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gps_lib
+.PHONY : gps_lib
 
 # fast build rule for target.
-example/fast:
-	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/example.dir/build.make src/CMakeFiles/example.dir/build
-.PHONY : example/fast
+gps_lib/fast:
+	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/gps_lib.dir/build.make src/CMakeFiles/gps_lib.dir/build
+.PHONY : gps_lib/fast
 
 #=============================================================================
 # Target rules for targets named unit_tests
@@ -236,7 +236,7 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... test"
-	@echo "... example"
+	@echo "... gps_lib"
 	@echo "... gtest"
 	@echo "... gtest_main"
 	@echo "... unit_tests"

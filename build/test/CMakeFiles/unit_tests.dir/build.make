@@ -92,7 +92,7 @@ unit_tests_EXTERNAL_OBJECTS =
 
 bin/unit_tests: test/CMakeFiles/unit_tests.dir/test.cpp.o
 bin/unit_tests: test/CMakeFiles/unit_tests.dir/build.make
-bin/unit_tests: lib/libexample.a
+bin/unit_tests: lib/libgps_lib.a
 bin/unit_tests: lib/libgtest_main.a
 bin/unit_tests: lib/libgtest.a
 bin/unit_tests: test/CMakeFiles/unit_tests.dir/link.txt

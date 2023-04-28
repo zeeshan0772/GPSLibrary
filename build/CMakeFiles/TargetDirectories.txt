@@ -5,7 +5,7 @@
 /home/zeeshan/Desktop/GPS Library/build/CMakeFiles/install.dir
 /home/zeeshan/Desktop/GPS Library/build/CMakeFiles/install/local.dir
 /home/zeeshan/Desktop/GPS Library/build/CMakeFiles/install/strip.dir
-/home/zeeshan/Desktop/GPS Library/build/src/CMakeFiles/example.dir
+/home/zeeshan/Desktop/GPS Library/build/src/CMakeFiles/gps_lib.dir
 /home/zeeshan/Desktop/GPS Library/build/src/CMakeFiles/test.dir
 /home/zeeshan/Desktop/GPS Library/build/src/CMakeFiles/edit_cache.dir
 /home/zeeshan/Desktop/GPS Library/build/src/CMakeFiles/rebuild_cache.dir

@@ -1,1 +1,1 @@
-/usr/bin/c++ --coverage CMakeFiles/unit_tests.dir/test.cpp.o -o ../bin/unit_tests  ../lib/libexample.a ../lib/libgtest_main.a ../lib/libgtest.a 
+/usr/bin/c++ --coverage CMakeFiles/unit_tests.dir/test.cpp.o -o ../bin/unit_tests  ../lib/libgps_lib.a ../lib/libgtest_main.a ../lib/libgtest.a 

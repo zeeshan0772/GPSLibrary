@@ -77,7 +77,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "src/CMakeFiles/example.dir/DependInfo.cmake"
+  "src/CMakeFiles/gps_lib.dir/DependInfo.cmake"
   "test/CMakeFiles/unit_tests.dir/DependInfo.cmake"
   "_deps/gtest-build/googletest/CMakeFiles/gtest.dir/DependInfo.cmake"
   "_deps/gtest-build/googletest/CMakeFiles/gtest_main.dir/DependInfo.cmake"

@@ -15,7 +15,7 @@ add_executable(
 
 target_link_libraries(unit_tests
   PRIVATE
-    example
+    gps_lib
     gtest_main
   )
 
